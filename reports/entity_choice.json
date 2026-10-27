@@ -1,0 +1,19 @@
+{
+  "chosen": "product_id",
+  "candidates": {
+    "product_id": {
+      "series": 5259,
+      "panel_rows": 38044,
+      "modeled_months": 17,
+      "cv_folds": 8,
+      "qualifies": true
+    },
+    "category": {
+      "series": 294,
+      "panel_rows": 3910,
+      "modeled_months": 17,
+      "cv_folds": 8,
+      "qualifies": true
+    }
+  }
+}

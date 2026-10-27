@@ -1,0 +1,124 @@
+{
+  "max_abs_diff": 1.1641532182693481e-10,
+  "by_month": {
+    "2017-04": {
+      "panel_revenue": 4267.049999999999,
+      "unentered_revenue": 349575.93,
+      "total_accounted": 353842.98,
+      "order_lines_revenue": 353842.98,
+      "abs_diff": 0.0
+    },
+    "2017-05": {
+      "panel_revenue": 26083.899999999998,
+      "unentered_revenue": 477075.29000000004,
+      "total_accounted": 503159.19000000006,
+      "order_lines_revenue": 503159.19000000006,
+      "abs_diff": 0.0
+    },
+    "2017-06": {
+      "panel_revenue": 41006.51,
+      "unentered_revenue": 388910.1,
+      "total_accounted": 429916.61,
+      "order_lines_revenue": 429916.61,
+      "abs_diff": 0.0
+    },
+    "2017-07": {
+      "panel_revenue": 49693.869999999995,
+      "unentered_revenue": 442593.43,
+      "total_accounted": 492287.3,
+      "order_lines_revenue": 492287.30000000005,
+      "abs_diff": 5.820766091346741e-11
+    },
+    "2017-08": {
+      "panel_revenue": 71254.26000000001,
+      "unentered_revenue": 496991.53,
+      "total_accounted": 568245.79,
+      "order_lines_revenue": 568245.7899999999,
+      "abs_diff": 1.1641532182693481e-10
+    },
+    "2017-09": {
+      "panel_revenue": 83574.01000000001,
+      "unentered_revenue": 537841.8999999999,
+      "total_accounted": 621415.9099999999,
+      "order_lines_revenue": 621415.91,
+      "abs_diff": 1.1641532182693481e-10
+    },
+    "2017-10": {
+      "panel_revenue": 95885.31,
+      "unentered_revenue": 564294.31,
+      "total_accounted": 660179.6200000001,
+      "order_lines_revenue": 660179.62,
+      "abs_diff": 1.1641532182693481e-10
+    },
+    "2017-11": {
+      "panel_revenue": 175275.30000000002,
+      "unentered_revenue": 828586.8400000001,
+      "total_accounted": 1003862.1400000001,
+      "order_lines_revenue": 1003862.14,
+      "abs_diff": 1.1641532182693481e-10
+    },
+    "2017-12": {
+      "panel_revenue": 145568.46000000002,
+      "unentered_revenue": 596615.33,
+      "total_accounted": 742183.79,
+      "order_lines_revenue": 742183.79,
+      "abs_diff": 0.0
+    },
+    "2018-01": {
+      "panel_revenue": 175742.9,
+      "unentered_revenue": 769713.39,
+      "total_accounted": 945456.29,
+      "order_lines_revenue": 945456.29,
+      "abs_diff": 0.0
+    },
+    "2018-02": {
+      "panel_revenue": 194893.87,
+      "unentered_revenue": 643001.5599999999,
+      "total_accounted": 837895.4299999999,
+      "order_lines_revenue": 837895.4299999999,
+      "abs_diff": 0.0
+    },
+    "2018-03": {
+      "panel_revenue": 248549.42,
+      "unentered_revenue": 732501.64,
+      "total_accounted": 981051.06,
+      "order_lines_revenue": 981051.06,
+      "abs_diff": 0.0
+    },
+    "2018-04": {
+      "panel_revenue": 224828.27,
+      "unentered_revenue": 768764.71,
+      "total_accounted": 993592.98,
+      "order_lines_revenue": 993592.98,
+      "abs_diff": 0.0
+    },
+    "2018-05": {
+      "panel_revenue": 244728.82,
+      "unentered_revenue": 748142.93,
+      "total_accounted": 992871.75,
+      "order_lines_revenue": 992871.75,
+      "abs_diff": 0.0
+    },
+    "2018-06": {
+      "panel_revenue": 198811.01,
+      "unentered_revenue": 664454.52,
+      "total_accounted": 863265.53,
+      "order_lines_revenue": 863265.53,
+      "abs_diff": 0.0
+    },
+    "2018-07": {
+      "panel_revenue": 186712.03000000003,
+      "unentered_revenue": 691332.24,
+      "total_accounted": 878044.27,
+      "order_lines_revenue": 878044.27,
+      "abs_diff": 0.0
+    },
+    "2018-08": {
+      "panel_revenue": 188121.84000000003,
+      "unentered_revenue": 660738.26,
+      "total_accounted": 848860.1000000001,
+      "order_lines_revenue": 848860.1,
+      "abs_diff": 1.1641532182693481e-10
+    }
+  }
+}
