@@ -1,0 +1,219 @@
+{
+  "learnable": {
+    "repeats": [
+      {
+        "repeat": 0,
+        "train_seed": 42,
+        "val_seed": 1042,
+        "tail_threshold": 5.55778156169175,
+        "tail_bias": {
+          "none": -0.271641826319559,
+          "weights": -0.19220666032403858,
+          "smoter": -0.20198589806333184
+        },
+        "tail_mae": {
+          "none": 0.4036682117466875,
+          "weights": 0.34183711437408293,
+          "smoter": 0.3825736247381
+        },
+        "rmsle": {
+          "none": 0.07947801568673704,
+          "weights": 0.07755439429168282,
+          "smoter": 0.08180726533295307
+        },
+        "smoter_vs_none": {
+          "tail_bias_reduction_rel": 0.2564256366553951,
+          "tail_mae_gain_rel": 0.05225724095863381,
+          "bulk_rmsle_worsening_rel": 0.02930684197497807
+        }
+      },
+      {
+        "repeat": 1,
+        "train_seed": 43,
+        "val_seed": 1043,
+        "tail_threshold": 5.995082046264877,
+        "tail_bias": {
+          "none": -0.36616884405805367,
+          "weights": -0.3043130332214105,
+          "smoter": -0.2814470392796996
+        },
+        "tail_mae": {
+          "none": 0.5076517303491976,
+          "weights": 0.45228127717581346,
+          "smoter": 0.48004410947034265
+        },
+        "rmsle": {
+          "none": 0.07341535476757632,
+          "weights": 0.07102728216955725,
+          "smoter": 0.0744240055928819
+        },
+        "smoter_vs_none": {
+          "tail_bias_reduction_rel": 0.23137360306089277,
+          "tail_mae_gain_rel": 0.05438299375019282,
+          "bulk_rmsle_worsening_rel": 0.013738962761929489
+        }
+      },
+      {
+        "repeat": 2,
+        "train_seed": 44,
+        "val_seed": 1044,
+        "tail_threshold": 5.610630322297553,
+        "tail_bias": {
+          "none": -0.3454830023887212,
+          "weights": -0.22687135275357945,
+          "smoter": -0.22729884995567126
+        },
+        "tail_mae": {
+          "none": 0.4175980755149552,
+          "weights": 0.3414844077555104,
+          "smoter": 0.34033381769179494
+        },
+        "rmsle": {
+          "none": 0.07547944189726982,
+          "weights": 0.07494004473054101,
+          "smoter": 0.07571868663612416
+        },
+        "smoter_vs_none": {
+          "tail_bias_reduction_rel": 0.3420838409296753,
+          "tail_mae_gain_rel": 0.18502062713742856,
+          "bulk_rmsle_worsening_rel": 0.003169667565639382
+        }
+      },
+      {
+        "repeat": 3,
+        "train_seed": 45,
+        "val_seed": 1045,
+        "tail_threshold": 6.015221927068544,
+        "tail_bias": {
+          "none": -0.25408773261364587,
+          "weights": -0.18313889528623384,
+          "smoter": -0.17265739207641204
+        },
+        "tail_mae": {
+          "none": 0.35860625959047926,
+          "weights": 0.3504981574130703,
+          "smoter": 0.378598722136498
+        },
+        "rmsle": {
+          "none": 0.07033519978455288,
+          "weights": 0.07030335466887831,
+          "smoter": 0.07251565185172668
+        },
+        "smoter_vs_none": {
+          "tail_bias_reduction_rel": 0.32048119639468414,
+          "tail_mae_gain_rel": -0.055750456137741954,
+          "bulk_rmsle_worsening_rel": 0.031000865482046554
+        }
+      },
+      {
+        "repeat": 4,
+        "train_seed": 46,
+        "val_seed": 1046,
+        "tail_threshold": 5.679757027611558,
+        "tail_bias": {
+          "none": -0.18677602193869372,
+          "weights": -0.10239368284683716,
+          "smoter": -0.07760741099166281
+        },
+        "tail_mae": {
+          "none": 0.318170914373827,
+          "weights": 0.29004510116013443,
+          "smoter": 0.28761406477674367
+        },
+        "rmsle": {
+          "none": 0.07248305126458941,
+          "weights": 0.07310264201933062,
+          "smoter": 0.07410238360183004
+        },
+        "smoter_vs_none": {
+          "tail_bias_reduction_rel": 0.5844894318547151,
+          "tail_mae_gain_rel": 0.09603910419411033,
+          "bulk_rmsle_worsening_rel": 0.022340841189611008
+        }
+      }
+    ],
+    "mean_tail_bias_reduction_rel": 0.3469707417790725,
+    "mean_tail_mae_gain_rel": 0.0663899019805247,
+    "mean_bulk_rmsle_worsening_rel": 0.0199114357948409
+  },
+  "unlearnable": {
+    "repeats": [
+      {
+        "repeat": 0,
+        "train_seed": 42,
+        "val_seed": 1042,
+        "tail_threshold": 5.529063696729912,
+        "tail_mae": {
+          "none": 0.9344125609674364,
+          "weights": 0.9262294196550885,
+          "smoter": 0.925134381557267
+        },
+        "smoter_vs_none": {
+          "tail_mae_gain_rel": 0.009929424964667971
+        }
+      },
+      {
+        "repeat": 1,
+        "train_seed": 43,
+        "val_seed": 1043,
+        "tail_threshold": 5.996511107530193,
+        "tail_mae": {
+          "none": 1.1349369854775093,
+          "weights": 1.0817216249327086,
+          "smoter": 1.11132440493151
+        },
+        "smoter_vs_none": {
+          "tail_mae_gain_rel": 0.020805190815122276
+        }
+      },
+      {
+        "repeat": 2,
+        "train_seed": 44,
+        "val_seed": 1044,
+        "tail_threshold": 5.582601114367723,
+        "tail_mae": {
+          "none": 1.286051693287052,
+          "weights": 1.250764326227805,
+          "smoter": 1.225545194726125
+        },
+        "smoter_vs_none": {
+          "tail_mae_gain_rel": 0.04704826320493918
+        }
+      },
+      {
+        "repeat": 3,
+        "train_seed": 45,
+        "val_seed": 1045,
+        "tail_threshold": 5.992182169352932,
+        "tail_mae": {
+          "none": 1.1032013024685132,
+          "weights": 1.105254669665914,
+          "smoter": 1.1263296301784091
+        },
+        "smoter_vs_none": {
+          "tail_mae_gain_rel": -0.02096473930745385
+        }
+      },
+      {
+        "repeat": 4,
+        "train_seed": 46,
+        "val_seed": 1046,
+        "tail_threshold": 5.658483308965355,
+        "tail_mae": {
+          "none": 0.9692404498450641,
+          "weights": 0.9695624055239882,
+          "smoter": 0.9689183842327618
+        },
+        "smoter_vs_none": {
+          "tail_mae_gain_rel": 0.0003322865985976809
+        }
+      }
+    ],
+    "mean_tail_mae_gain_rel": 0.01143008525517465
+  },
+  "leak_mutant": {
+    "tail_mae_correct": 0.377862582777313,
+    "tail_mae_mutant": 0.2759820382712561,
+    "leak_mutant_inflation_ratio": 1.3691564318614131
+  }
+}
