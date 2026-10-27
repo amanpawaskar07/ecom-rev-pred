@@ -1,0 +1,82 @@
+version: 1
+global:
+  seed: 42
+  repro_rel_tol: 1.0e-6
+  n_bootstrap: 2000
+  ci_alpha: 0.05
+  min_effect_rel: 0.01
+  folds_favoring_frac: 0.67
+  bool_true: 1
+  zero: 0
+metrics:
+  primary: rmsle
+  tail_quantile: 0.90
+  bulk_noninferiority_rel: 0.02
+phase0:
+  independent_metric_abs_tol: 1.0e-12
+  min_tests: 12
+  bootstrap_null_trials: 100
+  bootstrap_null_type1_max: 0.10
+phase1:
+  recon_abs_tol_brl: 0.01
+  max_unmatched_revenue_frac: 0.005
+  max_unmapped_states: 0
+  holdout_months: 3
+  min_window_months: 14
+  min_month_order_frac_of_median: 0.10
+  min_active_months_before_entry: 3
+  min_series: 150
+  min_panel_rows: 3000
+  min_cv_folds: 6
+  truncation_max_abs_diff: 0.0
+  mutant_detection_min_frac: 1.0
+phase2:
+  perturbation_max_abs_diff: 0.0
+  shuffle_control_max_rel_gain: 0.005
+  mutant_detection_min_frac: 1.0
+phase3:
+  roundtrip_max_rel_err: 1.0e-6
+  smoter_interp_abs_tol: 1.0e-9
+  planted_tail_bias_reduction_min_rel: 0.25
+  planted_tail_mae_gain_min_rel: 0.0
+  null_tail_gain_max_rel: 0.02
+  leak_mutant_inflation_min_ratio: 1.3
+  mutant_detection_min_frac: 1.0
+phase4:
+  oof_causality_violations_max: 0
+  min_meta_train_rows: 1000
+  linear_truth_stack_gain_max_rel: 0.01
+  mutant_detection_min_frac: 1.0
+phase5:
+  baseline_beat_margin_rel: 0.03
+  tuning_budget_configs: 24
+  holdout_touch_exact: 1
+  n_seeds: 3
+  seed_spread_max_rel: 0.05
+phase6:
+  additivity_max_abs: 1.0e-3
+  oracle_shap_max_abs: 1.0e-6
+  planted_rank_spearman_min: 0.90
+  planted_noise_share_max: 0.05
+  perm_vs_shap_spearman_min: 0.70
+  top3_overlap_min: 2
+  noise_feature_max_rel_to_top: 0.10
+  noise_feature_top_k_forbidden: 5
+  mutant_detection_min_frac: 1.0
+phase7:
+  parity_rows: 500
+  parity_max_abs_brl: 1.0e-6
+  invalid_payload_cases_min: 8
+  bench_requests: 500
+  predict_p95_ms_max: 100
+  explain_p95_ms_max: 2000
+phase8:
+  apptest_scenarios_min: 6
+  ui_display_vs_api_max_abs: 0.005
+phase9:
+  container_parity_max_abs_brl: 1.0e-6
+  predict_p95_ms_max: 150
+  healthcheck_timeout_s: 60
+phase10:
+  readme_unsourced_numbers_max: 0
+  readme_numeric_allowlist: ["8000", "8501", "3.11"]

@@ -1,0 +1,35 @@
+dataset: olist
+raw_dir: data/raw
+files:
+  orders: olist_orders_dataset.csv
+  items: olist_order_items_dataset.csv
+  customers: olist_customers_dataset.csv
+  products: olist_products_dataset.csv
+  translation: product_category_name_translation.csv
+expected_rowcounts: {orders: 99441, items: 112650, customers: 99441, products: 32951, translation: 71}
+revenue: sum of items.price in BRL, freight_value excluded
+exclude_statuses: [canceled, unavailable]
+month_source: orders.order_purchase_timestamp
+region_map:
+  North: [AC, AP, AM, PA, RO, RR, TO]
+  Northeast: [AL, BA, CE, MA, PB, PE, PI, RN, SE]
+  Central-West: [DF, GO, MT, MS]
+  Southeast: [ES, MG, RJ, SP]
+  South: [PR, RS, SC]
+entity_ladder: [product_id, category]
+lag_depth: 3
+cv: {min_train_months: 6, val_months: 1}
+features:
+  base: [lag_rev_1, lag_rev_2, lag_rev_3, lag_lines_1, lag_lines_2, lag_lines_3,
+         roll_mean_rev_3, trailing_price_3, active_months_before, months_since_first_sale,
+         month_of_year]
+  categorical: [region, category]
+  engineered: [price_bucket, high_value_flag, cat_region_level]
+xgb_default: {n_estimators: 300, max_depth: 4, learning_rate: 0.05, subsample: 0.8,
+  colsample_bytree: 0.8, min_child_weight: 5, tree_method: hist, n_jobs: 1}
+stack:
+  bases: [ridge, rf]
+  meta: xgb
+  meta_params: {n_estimators: 100, max_depth: 2, learning_rate: 0.05, n_jobs: 1}
+  min_inner_train_months: 3
+rf_default: {n_estimators: 200, max_depth: 12, min_samples_leaf: 5, n_jobs: 1}
