@@ -11,3 +11,4 @@ data/processed/*
 data/holdout/*
 !data/holdout/.gitkeep
 *.egg-info
+reports/scratch/

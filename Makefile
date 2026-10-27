@@ -3,7 +3,7 @@ PYTHON ?= $(VENV)/bin/python
 PYTEST ?= $(VENV)/bin/pytest
 RUFF ?= $(VENV)/bin/ruff
 
-.PHONY: setup test lint verify-frozen ci \
+.PHONY: setup test lint verify-frozen build-data ci \
 	gate-0 gate-1 gate-2 gate-3 gate-4 gate-5 gate-5a gate-6 gate-7 gate-8 gate-9 gate-10
 
 setup:
@@ -17,6 +17,9 @@ lint:
 
 verify-frozen:
 	$(PYTHON) scripts/verify_frozen.py
+
+build-data:
+	PYTHONHASHSEED=0 $(PYTHON) scripts/build_data.py
 
 ci: lint test verify-frozen
 
