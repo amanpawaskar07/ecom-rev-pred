@@ -1,4 +1,4 @@
-"""Run Phase 4 candidate ablations across expanding-window CV folds."""
+"""Phase 4 ablation study: expanding-window CV for six candidates and decision rules."""
 from __future__ import annotations
 
 import json
@@ -12,19 +12,18 @@ from gates import lib as gl
 from revpred.config import get_project_config, get_thresholds
 from revpred.cv import expanding_window_splits
 from revpred.evaluate import evaluate_oof
-from revpred.models import make_rf, make_ridge, make_xgb
+from revpred.models import FullRidgeRegressor, make_rf, make_ridge, make_xgb
 from revpred.stack import TemporalStacker
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 REPORTS_DIR = REPO_ROOT / "reports"
-OOF_DIR = REPORTS_DIR / "oof"
 
 
 def run_stack_ablations(
     panel_dev: pd.DataFrame | None = None,
     reports_dir: Path | str | None = None,
 ) -> dict[str, Any]:
-    """Execute all 6 candidates in cost order across CV folds and compute statistical decisions."""
+    """Execute expanding-window CV across all 6 candidate configurations and record decisions."""
     cfg = get_project_config()
     thr = get_thresholds()
     primary_metric = str(thr["metrics"]["primary"])
@@ -74,6 +73,13 @@ def run_stack_ablations(
 
     print(f"Running Phase 4 ablations across {len(splits)} expanding-window folds...")
 
+    ridge_feats = base_features + ["region", "category"]
+    rf_feats = active_features
+    stack_bases = [
+        (FullRidgeRegressor(), ridge_feats),
+        (make_rf(), rf_feats),
+    ]
+
     for fold_idx, (tr_idx, val_idx) in enumerate(splits):
         tr = panel_dev.iloc[tr_idx].copy().reset_index(drop=True)
         val = panel_dev.iloc[val_idx].copy().reset_index(drop=True)
@@ -86,27 +92,27 @@ def run_stack_ablations(
         X_tr = tr[active_features]
         X_val = val[active_features]
 
-        # 1. Candidate 0: Ridge
-        r = make_ridge()
-        r.fit(X_tr, y_tr_trans, ridge__sample_weight=w)
-        pred_ridge = np.clip(np.expm1(r.predict(X_val)), 0.0, None)
+        # 1. Candidate 0: Ridge (FullRidgeRegressor replicating baseline Ridge, unweighted)
+        r = FullRidgeRegressor()
+        r.fit(tr, y_tr_trans)
+        pred_ridge = np.clip(np.expm1(r.predict(val)), 0.0, None)
 
-        # 2. Candidate 1: XGBoost
+        # 2. Candidate 1: XGBoost (numeric features, Phase 3 sample weights)
         m_xgb = make_xgb()
         m_xgb.fit(X_tr, y_tr_trans, sample_weight=w)
         pred_xgb = np.clip(np.expm1(m_xgb.predict(X_val)), 0.0, None)
 
-        # 3. Candidate 1: Random Forest
+        # 3. Candidate 2: Random Forest (numeric features, Phase 3 sample weights)
         m_rf = make_rf()
         m_rf.fit(X_tr, y_tr_trans, sample_weight=w)
         pred_rf = np.clip(np.expm1(m_rf.predict(X_val)), 0.0, None)
 
-        # 4. Candidate 2: Mean Blend of ridge + rf + xgb
+        # 4. Candidate 3: Mean Blend of ridge + rf + xgb
         pred_mean_blend = (pred_ridge + pred_rf + pred_xgb) / 3.0
 
-        # 5. Candidate 3: Temporal Stacker with Ridge meta
+        # 5. Candidate 4: Temporal Stacker with Ridge meta
         stack_ridge = TemporalStacker(
-            bases=["ridge", "rf"],
+            bases=stack_bases,
             meta=make_ridge(),
             min_inner_train_months=int(cfg["stack"]["min_inner_train_months"]),
             features=active_features,
@@ -117,9 +123,9 @@ def run_stack_ablations(
         stack_ridge.fit(tr)
         pred_stack_ridge = stack_ridge.predict(val)
 
-        # 6. Candidate 4: Temporal Stacker with XGB meta
+        # 6. Candidate 5: Temporal Stacker with XGB meta
         stack_xgb = TemporalStacker(
-            bases=["ridge", "rf"],
+            bases=stack_bases,
             meta=make_xgb(params=cfg["stack"]["meta_params"]),
             min_inner_train_months=int(cfg["stack"]["min_inner_train_months"]),
             features=active_features,

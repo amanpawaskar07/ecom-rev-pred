@@ -148,6 +148,30 @@ def build_checks() -> None:
     gl.check("decision_recompute_matches", recomputed_matches, "==", "global.bool_true")
 
     # =========================================================================
+    # 5b. Ridge Rival Equivalence to Baseline Ridge
+    # =========================================================================
+    stack_ridge_path = OOF_DIR / "stack_ridge.parquet"
+    baseline_ridge_path = OOF_DIR / "baseline_ridge.parquet"
+
+    df_stack_ridge = pd.read_parquet(stack_ridge_path)
+    df_baseline_ridge = pd.read_parquet(baseline_ridge_path)
+
+    merged_ridge = df_stack_ridge[["row_id", "pred"]].merge(
+        df_baseline_ridge[["row_id", "pred"]],
+        on="row_id",
+        suffixes=("_stack", "_baseline"),
+    )
+    ridge_rival_vs_baseline_max_abs_diff = float(
+        np.max(np.abs(merged_ridge["pred_stack"] - merged_ridge["pred_baseline"]))
+    )
+    gl.check(
+        "ridge_rival_vs_baseline_max_abs_diff",
+        ridge_rival_vs_baseline_max_abs_diff,
+        "<=",
+        "global.repro_rel_tol",
+    )
+
+    # =========================================================================
     # 6. Informative Output Table
     # =========================================================================
     best_cand = recomputed_decision.evidence["best_candidate"]

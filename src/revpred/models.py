@@ -1,17 +1,19 @@
 """Model specifications, fixed hyperparameter factories, and ablation wrappers."""
 from __future__ import annotations
 
-from collections.abc import Callable
-from typing import Any
+from collections.abc import Callable, Sequence
+from typing import Any, ClassVar
 
 import numpy as np
 import pandas as pd
 import xgboost as xgb
-from sklearn.base import clone
+from sklearn.base import BaseEstimator, RegressorMixin, clone
+from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import Ridge
+from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, StandardScaler
 
 from revpred.config import get_project_config, get_thresholds
 
@@ -122,3 +124,100 @@ class ModelSpec:
     def __call__(self, train_df: pd.DataFrame, val_df: pd.DataFrame) -> np.ndarray:
         self.fit(train_df)
         return self.predict(val_df)
+
+
+class FullRidgeRegressor(BaseEstimator, RegressorMixin):
+    """Full Ridge regressor replicating Phase 1 baseline Ridge.
+
+    Transforms log_features with log1p and StandardScaler, num_features with StandardScaler,
+    and cat_features with OneHotEncoder(handle_unknown='ignore', sparse_output=False).
+    Fits Ridge on y_log with alpha selected from [0.1, 1.0, 10.0, 100.0] via TimeSeriesSplit(3).
+    Rows are sorted by month inside fit. Unweighted.
+    """
+
+    LOG_FEATURES: ClassVar[list[str]] = [
+        "lag_rev_1",
+        "lag_rev_2",
+        "lag_rev_3",
+        "roll_mean_rev_3",
+        "lag_lines_1",
+        "lag_lines_2",
+        "lag_lines_3",
+        "trailing_price_3",
+    ]
+    NUM_FEATURES: ClassVar[list[str]] = [
+        "active_months_before",
+        "months_since_first_sale",
+        "month_of_year",
+    ]
+    CAT_FEATURES: ClassVar[list[str]] = ["region", "category"]
+
+    def __init__(
+        self,
+        alphas: Sequence[float] = (0.1, 1.0, 10.0, 100.0),
+        cv_splits: int = 3,
+        random_state: int | None = None,
+    ):
+        self.alphas = alphas
+        self.cv_splits = cv_splits
+        self.random_state = random_state
+
+    def fit(self, df: pd.DataFrame, y_log: np.ndarray | pd.Series | Sequence[float]) -> FullRidgeRegressor:
+        """Fit preprocessor and Ridge with TimeSeriesSplit tuning on y_log."""
+        thr = get_thresholds()
+        seed = int(self.random_state if self.random_state is not None else thr["global"]["seed"])
+
+        y_arr = np.asarray(y_log, dtype=float)
+
+        if "month" in df.columns:
+            df_temp = df.copy()
+            df_temp["_y_target"] = y_arr
+            train_sorted = df_temp.sort_values("month").reset_index(drop=True)
+            y_train_log = train_sorted["_y_target"].to_numpy(dtype=float)
+            df_sorted = train_sorted.drop(columns=["_y_target"])
+        else:
+            df_sorted = df.copy().reset_index(drop=True)
+            y_train_log = y_arr
+
+        preprocessor = ColumnTransformer(
+            transformers=[
+                (
+                    "log",
+                    Pipeline([
+                        ("log1p", FunctionTransformer(np.log1p, validate=False)),
+                        ("scaler", StandardScaler()),
+                    ]),
+                    self.LOG_FEATURES,
+                ),
+                ("num", StandardScaler(), self.NUM_FEATURES),
+                (
+                    "cat",
+                    OneHotEncoder(handle_unknown="ignore", sparse_output=False),
+                    self.CAT_FEATURES,
+                ),
+            ]
+        )
+
+        X_train = preprocessor.fit_transform(df_sorted)
+
+        cv_inner = TimeSeriesSplit(n_splits=self.cv_splits)
+        grid = GridSearchCV(
+            estimator=Ridge(random_state=seed),
+            param_grid={"alpha": list(self.alphas)},
+            cv=cv_inner,
+            scoring="neg_mean_squared_error",
+        )
+        grid.fit(X_train, y_train_log)
+
+        self.preprocessor_ = preprocessor
+        self.grid_ = grid
+        self.best_estimator_ = grid.best_estimator_
+        return self
+
+    def predict(self, df: pd.DataFrame) -> np.ndarray:
+        """Predict log-scale predictions on df."""
+        if not hasattr(self, "grid_"):
+            raise RuntimeError("FullRidgeRegressor must be fitted before calling predict.")
+        X_val = self.preprocessor_.transform(df)
+        preds_log = self.grid_.best_estimator_.predict(X_val)
+        return np.asarray(preds_log, dtype=float)

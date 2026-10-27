@@ -11,7 +11,7 @@ from sklearn.pipeline import Pipeline
 
 from gates import lib as gl
 from revpred.config import get_project_config
-from revpred.models import make_rf, make_ridge, make_xgb
+from revpred.models import FullRidgeRegressor, make_rf, make_ridge, make_xgb
 from revpred.targets import Log1pTargetTransform
 
 
@@ -83,15 +83,26 @@ class TemporalStacker:
         target_transform: str | Any | None = "log1p",
         resampler: str | None = "weights",
         cache: dict[tuple[int, tuple[str, ...]], Any] | None = None,
-    ) -> None:
+    ):
         cfg = get_project_config()
         stack_cfg = cfg.get("stack", {})
 
         if bases is None:
             configured_bases = stack_cfg.get("bases", ["ridge", "rf"])
-            self.bases = [_resolve_estimator(b, "base") for b in configured_bases]
+            raw_bases = list(configured_bases)
         else:
-            self.bases = [_resolve_estimator(b, "base") for b in bases]
+            raw_bases = list(bases)
+
+        self.bases: list[Any] = []
+        self.base_features_: list[list[str] | None] = []
+        for b in raw_bases:
+            if isinstance(b, (tuple, list)) and len(b) == 2 and (b[1] is None or isinstance(b[1], (list, tuple))):
+                est_spec, feat_spec = b
+                self.bases.append(_resolve_estimator(est_spec, "base"))
+                self.base_features_.append(list(feat_spec) if feat_spec is not None else None)
+            else:
+                self.bases.append(_resolve_estimator(b, "base"))
+                self.base_features_.append(None)
 
         if meta is None:
             configured_meta = stack_cfg.get("meta", "xgb")
@@ -134,6 +145,18 @@ class TemporalStacker:
             self.transform_y_, self.inverse_y_ = self.target_transform
         else:
             raise ValueError(f"Unsupported target_transform: {self.target_transform}")
+
+    def _get_base_X(self, df: pd.DataFrame, b_idx: int) -> pd.DataFrame | np.ndarray:
+        feats = self.base_features_[b_idx]
+        if feats is not None:
+            base_model = self.bases[b_idx]
+            if hasattr(base_model, "LOG_FEATURES") or isinstance(base_model, FullRidgeRegressor):
+                cols = list(feats)
+                if self.month_col in df.columns and self.month_col not in cols:
+                    cols.append(self.month_col)
+                return df[cols]
+            return df[feats].to_numpy(dtype=float)
+        return df[self.features_].to_numpy(dtype=float)
 
     @property
     def oof_log(self) -> pd.DataFrame:
@@ -190,12 +213,13 @@ class TemporalStacker:
             inner_train = train_df[train_df[self.month_col].isin(earlier_months)]
             inner_val = train_df[train_df[self.month_col] == j_month]
 
-            X_in_tr = inner_train[self.features_].to_numpy(dtype=float)
             y_in_tr_trans = self.transform_y_(inner_train[self.target_col].to_numpy(dtype=float))
-            X_in_val = inner_val[self.features_].to_numpy(dtype=float)
 
             base_preds_j: list[np.ndarray] = []
             for b_idx, base_spec in enumerate(self.bases):
+                X_in_tr = self._get_base_X(inner_train, b_idx)
+                X_in_val = self._get_base_X(inner_val, b_idx)
+
                 cache_key = (b_idx, earlier_months)
                 if self.cache is not None and cache_key in self.cache:
                     base_model = self.cache[cache_key]
@@ -244,11 +268,11 @@ class TemporalStacker:
             _fit_with_optional_sample_weight(self.fitted_meta_, X_meta, y_meta_trans, sample_weight=None)
 
         # 4. Refit every base model on all train rows for inference
-        X_all = train_df[self.features_].to_numpy(dtype=float)
         y_all_trans = self.transform_y_(train_df[self.target_col].to_numpy(dtype=float))
 
         self.fitted_bases_ = []
-        for base_spec in self.bases:
+        for b_idx, base_spec in enumerate(self.bases):
+            X_all = self._get_base_X(train_df, b_idx)
             refit_base = clone(base_spec)
             refit_base.fit(X_all, y_all_trans)
             self.fitted_bases_.append(refit_base)
@@ -260,10 +284,11 @@ class TemporalStacker:
         if not self.fitted_bases_ or self.fitted_meta_ is None:
             raise RuntimeError("TemporalStacker must be fitted before predict can be called.")
 
-        X = df[self.features_].to_numpy(dtype=float)
-        base_preds = [
-            np.asarray(b.predict(X), dtype=float) for b in self.fitted_bases_
-        ]
+        base_preds = []
+        for b_idx, base_model in enumerate(self.fitted_bases_):
+            X_val = self._get_base_X(df, b_idx)
+            base_preds.append(np.asarray(base_model.predict(X_val), dtype=float))
+
         X_meta_val = np.column_stack(base_preds)
         meta_preds_trans = self.fitted_meta_.predict(X_meta_val)
         return self.inverse_y_(np.asarray(meta_preds_trans, dtype=float))
