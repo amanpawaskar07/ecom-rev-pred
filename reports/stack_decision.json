@@ -1,0 +1,170 @@
+{
+  "default_model": "xgb",
+  "candidates_in_cost_order": [
+    "ridge",
+    "xgb",
+    "rf",
+    "mean_blend",
+    "stack_ridge_meta",
+    "stack_xgb_meta"
+  ],
+  "decide_among_selected": "xgb",
+  "best_candidate": "stack_ridge_meta",
+  "mean_fold_metrics": {
+    "ridge": 2.0466312948355716,
+    "xgb": 1.987720060024911,
+    "rf": 1.9968966188243564,
+    "mean_blend": 1.9980007777884152,
+    "stack_ridge_meta": 1.978499129717744,
+    "stack_xgb_meta": 1.9811803182697612
+  },
+  "evidence": {
+    "best_candidate": "stack_ridge_meta",
+    "mean_fold_metrics": {
+      "ridge": 2.0466312948355716,
+      "xgb": 1.987720060024911,
+      "rf": 1.9968966188243564,
+      "mean_blend": 1.9980007777884152,
+      "stack_ridge_meta": 1.978499129717744,
+      "stack_xgb_meta": 1.9811803182697612
+    },
+    "pairwise_vs_best": {
+      "ridge": {
+        "winner": "stack_ridge_meta",
+        "advanced_wins": true,
+        "advanced_col": "stack_ridge_meta",
+        "rival_col": "ridge",
+        "metric": "rmsle",
+        "relative_gain": 0.03328990682872427,
+        "ci_lo": 0.051613970019962506,
+        "ci_hi": 0.08682712423051603,
+        "mean_diff": 0.06813216511782733,
+        "folds_favoring_adv": 8,
+        "n_folds": 8,
+        "folds_favoring_frac": 1.0,
+        "m_rival": 2.0466312948355716,
+        "m_adv": 1.978499129717744,
+        "per_fold_diff": [
+          0.06274821231587868,
+          0.09046439994535538,
+          0.09024884078478257,
+          0.06613209613892668,
+          0.059941148758788865,
+          0.04012780868423205,
+          0.052551840512862436,
+          0.08284297380179195
+        ]
+      },
+      "xgb": {
+        "winner": "xgb",
+        "advanced_wins": false,
+        "advanced_col": "stack_ridge_meta",
+        "rival_col": "xgb",
+        "metric": "rmsle",
+        "relative_gain": 0.004638948156035263,
+        "ci_lo": -7.035650402851463e-05,
+        "ci_hi": 0.01853915556158105,
+        "mean_diff": 0.009220930307165198,
+        "folds_favoring_adv": 5,
+        "n_folds": 8,
+        "folds_favoring_frac": 0.625,
+        "m_rival": 1.987720060024911,
+        "m_adv": 1.978499129717744,
+        "per_fold_diff": [
+          0.03138935180222768,
+          0.02322927497351257,
+          0.00840160774902765,
+          -0.00594766968162741,
+          0.01128546806720876,
+          -0.00842036320338413,
+          0.014852524807104972,
+          -0.0010227520567485104
+        ]
+      },
+      "rf": {
+        "winner": "rf",
+        "advanced_wins": false,
+        "advanced_col": "stack_ridge_meta",
+        "rival_col": "rf",
+        "metric": "rmsle",
+        "relative_gain": 0.00921304034128896,
+        "ci_lo": 0.011300942383349015,
+        "ci_hi": 0.025335065314752936,
+        "mean_diff": 0.018397489106612652,
+        "folds_favoring_adv": 8,
+        "n_folds": 8,
+        "folds_favoring_frac": 1.0,
+        "m_rival": 1.9968966188243564,
+        "m_adv": 1.978499129717744,
+        "per_fold_diff": [
+          0.031723408225488026,
+          0.008862010154873534,
+          0.018116515498248997,
+          0.0018980316285790444,
+          0.028499018618982852,
+          0.015907364599306195,
+          0.024957827504664465,
+          0.017215736622758104
+        ]
+      },
+      "mean_blend": {
+        "winner": "mean_blend",
+        "advanced_wins": false,
+        "advanced_col": "stack_ridge_meta",
+        "rival_col": "mean_blend",
+        "metric": "rmsle",
+        "relative_gain": 0.009760580820322537,
+        "ci_lo": 0.007519213298363138,
+        "ci_hi": 0.0335758841050889,
+        "mean_diff": 0.019501648070668537,
+        "folds_favoring_adv": 6,
+        "n_folds": 8,
+        "folds_favoring_frac": 0.75,
+        "m_rival": 1.9980007777884152,
+        "m_adv": 1.978499129717744,
+        "per_fold_diff": [
+          0.028447255077277855,
+          0.013254639336531149,
+          0.06477552120118268,
+          -0.00046886728468464867,
+          0.018018151069988164,
+          -0.008464175963633469,
+          0.019935363203103407,
+          0.020515297925583154
+        ]
+      },
+      "stack_ridge_meta": {
+        "is_best": true,
+        "winner": "stack_ridge_meta",
+        "advanced_wins": false
+      },
+      "stack_xgb_meta": {
+        "winner": "stack_xgb_meta",
+        "advanced_wins": false,
+        "advanced_col": "stack_ridge_meta",
+        "rival_col": "stack_xgb_meta",
+        "metric": "rmsle",
+        "relative_gain": 0.0013533288854588594,
+        "ci_lo": -0.0035784761236954295,
+        "ci_hi": 0.008407237305085597,
+        "mean_diff": 0.00268118855202204,
+        "folds_favoring_adv": 4,
+        "n_folds": 8,
+        "folds_favoring_frac": 0.5,
+        "m_rival": 1.9811803182697612,
+        "m_adv": 1.978499129717744,
+        "per_fold_diff": [
+          0.031844106735476,
+          -0.002225390555504969,
+          -0.006071874189579329,
+          0.009632361287371882,
+          -0.011524472926616403,
+          0.0010549068876797296,
+          -0.0022058164694360727,
+          0.0009456876467854869
+        ]
+      }
+    },
+    "selected": "xgb"
+  }
+}

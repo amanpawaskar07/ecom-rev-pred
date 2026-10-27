@@ -1,11 +1,12 @@
-"""Planted imbalance harness with fixed mathematical specification.
+"""Planted imbalance harness and linear truth harness with fixed mathematical specifications.
 
-Pre-registered benchmark for validating imbalanced regression treatments
-against known, planted data-generating processes.
+Pre-registered benchmarks for validating imbalanced regression treatments
+and stacking behavior against known, planted data-generating processes.
 """
 from __future__ import annotations
 
 import numpy as np
+import pandas as pd
 
 
 class PlantedTruth(dict):
@@ -82,3 +83,46 @@ def make_planted_imbalance(
         y_clean=y_clean,
     )
     return X, y, truth
+
+
+def make_linear_truth(
+    seed: int = 42,
+    n: int = 4000,
+    d: int = 10,
+) -> pd.DataFrame:
+    """Generate linear ground-truth dataset for stacking validation.
+
+    Specification (FIXED, constants must never be altered):
+    - X ~ N(0,1)^(n x d)
+    - y = X @ beta + 0.5 * N(0,1)
+    - beta = [2, -1.5, 1, 0.5, 0, 0, 0, 0, 0, 0]
+    - rows ordered into 20 equal "month" blocks for temporal folds.
+    Returns: pd.DataFrame with features x_0..x_{d-1}, revenue, y, month, row_id, series_id.
+    """
+    rng = np.random.default_rng(seed)
+    X = rng.standard_normal((n, d))
+    beta = np.zeros(d, dtype=float)
+    fixed_beta = [2.0, -1.5, 1.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    beta[: min(d, len(fixed_beta))] = fixed_beta[: min(d, len(fixed_beta))]
+
+    eps = rng.standard_normal(n)
+    y = X @ beta + 0.5 * eps
+
+    n_blocks = 20
+    rows_per_block = n // n_blocks
+    month_names = [f"m_{i:02d}" for i in range(n_blocks)]
+    months = np.repeat(month_names, rows_per_block)
+    if len(months) < n:
+        remainder = n - len(months)
+        months = np.concatenate([months, np.full(remainder, month_names[-1])])
+
+    col_names = [f"x_{i}" for i in range(d)]
+    df = pd.DataFrame(X, columns=col_names)
+    df["revenue"] = y
+    df["y"] = y
+    df["month"] = months
+    df["row_id"] = np.arange(n)
+    df["series_id"] = np.arange(n)
+    df.attrs["beta"] = beta.tolist()
+    df.attrs["seed"] = seed
+    return df
