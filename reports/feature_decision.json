@@ -1,0 +1,43 @@
+{
+  "decisions": {
+    "price_bucket": {
+      "kept": false,
+      "reason": "relative_gain (0.0003) < min_effect_rel (0.01); ci_lo (-0.0027) <= 0; folds_favoring_frac (0.50) < 0.67",
+      "relative_gain": 0.0002958382279618063,
+      "ci_lo": -0.0026789681621552986,
+      "ci_hi": 0.004146836564844738,
+      "folds_favoring_adv": 4,
+      "n_folds": 8,
+      "folds_favoring_frac": 0.5,
+      "advanced_wins": false
+    },
+    "high_value_flag": {
+      "kept": false,
+      "reason": "relative_gain (0.0001) < min_effect_rel (0.01); ci_lo (-0.0033) <= 0; folds_favoring_frac (0.38) < 0.67",
+      "relative_gain": 7.475385856153765e-05,
+      "ci_lo": -0.0032898446219906444,
+      "ci_hi": 0.0035588105744915124,
+      "folds_favoring_adv": 3,
+      "n_folds": 8,
+      "folds_favoring_frac": 0.375,
+      "advanced_wins": false
+    },
+    "cat_region_level": {
+      "kept": false,
+      "reason": "relative_gain (0.0021) < min_effect_rel (0.01); ci_lo (-0.0018) <= 0; folds_favoring_frac (0.62) < 0.67",
+      "relative_gain": 0.0020707238001012396,
+      "ci_lo": -0.0017777101541382088,
+      "ci_hi": 0.010026640280625814,
+      "folds_favoring_adv": 5,
+      "n_folds": 8,
+      "folds_favoring_frac": 0.625,
+      "advanced_wins": false
+    }
+  },
+  "kept": [],
+  "dropped": [
+    "price_bucket",
+    "high_value_flag",
+    "cat_region_level"
+  ]
+}
