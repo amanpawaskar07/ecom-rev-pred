@@ -1,0 +1,447 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "E-Commerce Revenue Predictor API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Health Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/meta": {
+      "get": {
+        "summary": "Meta",
+        "operationId": "meta_meta_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Meta Meta Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/predict": {
+      "post": {
+        "summary": "Predict",
+        "operationId": "predict_predict_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PredictRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PredictResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/explain": {
+      "post": {
+        "summary": "Explain",
+        "operationId": "explain_explain_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExplainRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExplainResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Contribution": {
+        "properties": {
+          "feature": {
+            "type": "string",
+            "title": "Feature"
+          },
+          "value": {
+            "title": "Value"
+          },
+          "shap": {
+            "type": "number",
+            "title": "Shap"
+          }
+        },
+        "type": "object",
+        "required": [
+          "feature",
+          "value",
+          "shap"
+        ],
+        "title": "Contribution"
+      },
+      "ExplainRequest": {
+        "properties": {
+          "lag_rev_1": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Lag Rev 1"
+          },
+          "lag_rev_2": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Lag Rev 2"
+          },
+          "lag_rev_3": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Lag Rev 3"
+          },
+          "lag_lines_1": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Lag Lines 1"
+          },
+          "lag_lines_2": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Lag Lines 2"
+          },
+          "lag_lines_3": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Lag Lines 3"
+          },
+          "roll_mean_rev_3": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Roll Mean Rev 3"
+          },
+          "trailing_price_3": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Trailing Price 3"
+          },
+          "active_months_before": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Active Months Before"
+          },
+          "months_since_first_sale": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Months Since First Sale"
+          },
+          "month_of_year": {
+            "type": "integer",
+            "maximum": 12.0,
+            "minimum": 1.0,
+            "title": "Month Of Year"
+          },
+          "region": {
+            "type": "string",
+            "title": "Region"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "top_k": {
+            "type": "integer",
+            "maximum": 15.0,
+            "minimum": 1.0,
+            "title": "Top K",
+            "default": 5
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "lag_rev_1",
+          "lag_rev_2",
+          "lag_rev_3",
+          "lag_lines_1",
+          "lag_lines_2",
+          "lag_lines_3",
+          "roll_mean_rev_3",
+          "trailing_price_3",
+          "active_months_before",
+          "months_since_first_sale",
+          "month_of_year",
+          "region",
+          "category"
+        ],
+        "title": "ExplainRequest"
+      },
+      "ExplainResponse": {
+        "properties": {
+          "base_value": {
+            "type": "number",
+            "title": "Base Value"
+          },
+          "prediction_log1p": {
+            "type": "number",
+            "title": "Prediction Log1P"
+          },
+          "contributions": {
+            "items": {
+              "$ref": "#/components/schemas/Contribution"
+            },
+            "type": "array",
+            "title": "Contributions"
+          },
+          "other_shap": {
+            "type": "number",
+            "title": "Other Shap"
+          }
+        },
+        "type": "object",
+        "required": [
+          "base_value",
+          "prediction_log1p",
+          "contributions",
+          "other_shap"
+        ],
+        "title": "ExplainResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "PredictRequest": {
+        "properties": {
+          "lag_rev_1": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Lag Rev 1"
+          },
+          "lag_rev_2": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Lag Rev 2"
+          },
+          "lag_rev_3": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Lag Rev 3"
+          },
+          "lag_lines_1": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Lag Lines 1"
+          },
+          "lag_lines_2": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Lag Lines 2"
+          },
+          "lag_lines_3": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Lag Lines 3"
+          },
+          "roll_mean_rev_3": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Roll Mean Rev 3"
+          },
+          "trailing_price_3": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Trailing Price 3"
+          },
+          "active_months_before": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Active Months Before"
+          },
+          "months_since_first_sale": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Months Since First Sale"
+          },
+          "month_of_year": {
+            "type": "integer",
+            "maximum": 12.0,
+            "minimum": 1.0,
+            "title": "Month Of Year"
+          },
+          "region": {
+            "type": "string",
+            "title": "Region"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "lag_rev_1",
+          "lag_rev_2",
+          "lag_rev_3",
+          "lag_lines_1",
+          "lag_lines_2",
+          "lag_lines_3",
+          "roll_mean_rev_3",
+          "trailing_price_3",
+          "active_months_before",
+          "months_since_first_sale",
+          "month_of_year",
+          "region",
+          "category"
+        ],
+        "title": "PredictRequest"
+      },
+      "PredictResponse": {
+        "properties": {
+          "predicted_revenue_brl": {
+            "type": "number",
+            "title": "Predicted Revenue Brl"
+          },
+          "prediction_log1p": {
+            "type": "number",
+            "title": "Prediction Log1P"
+          },
+          "model_sha": {
+            "type": "string",
+            "title": "Model Sha"
+          },
+          "outside_dev_range": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Outside Dev Range"
+          }
+        },
+        "type": "object",
+        "required": [
+          "predicted_revenue_brl",
+          "prediction_log1p",
+          "model_sha",
+          "outside_dev_range"
+        ],
+        "title": "PredictResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

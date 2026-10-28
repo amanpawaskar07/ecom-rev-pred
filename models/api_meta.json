@@ -1,0 +1,229 @@
+{
+  "regions": [
+    "Central-West",
+    "North",
+    "Northeast",
+    "South",
+    "Southeast"
+  ],
+  "categories": [
+    "agro_industry_and_commerce",
+    "air_conditioning",
+    "art",
+    "audio",
+    "auto",
+    "baby",
+    "bed_bath_table",
+    "books_general_interest",
+    "books_imported",
+    "books_technical",
+    "cds_dvds_musicals",
+    "christmas_supplies",
+    "cine_photo",
+    "computers",
+    "computers_accessories",
+    "consoles_games",
+    "construction_tools_construction",
+    "construction_tools_lights",
+    "construction_tools_safety",
+    "cool_stuff",
+    "costruction_tools_garden",
+    "costruction_tools_tools",
+    "diapers_and_hygiene",
+    "drinks",
+    "electronics",
+    "fashio_female_clothing",
+    "fashion_bags_accessories",
+    "fashion_male_clothing",
+    "fashion_shoes",
+    "fashion_underwear_beach",
+    "fixed_telephony",
+    "flowers",
+    "food",
+    "food_drink",
+    "furniture_bedroom",
+    "furniture_decor",
+    "furniture_living_room",
+    "furniture_mattress_and_upholstery",
+    "garden_tools",
+    "health_beauty",
+    "home_appliances",
+    "home_appliances_2",
+    "home_comfort_2",
+    "home_confort",
+    "home_construction",
+    "housewares",
+    "industry_commerce_and_business",
+    "kitchen_dining_laundry_garden_furniture",
+    "luggage_accessories",
+    "market_place",
+    "music",
+    "musical_instruments",
+    "office_furniture",
+    "party_supplies",
+    "pc_gamer",
+    "perfumery",
+    "pet_shop",
+    "signaling_and_security",
+    "small_appliances",
+    "small_appliances_home_oven_and_coffee",
+    "sports_leisure",
+    "stationery",
+    "tablets_printing_image",
+    "telephony",
+    "toys",
+    "unknown",
+    "watches_gifts"
+  ],
+  "feature_ranges": {
+    "lag_rev_1": {
+      "min": 0.0,
+      "max": 8815.0,
+      "ceiling": 88150.0
+    },
+    "lag_rev_2": {
+      "min": 0.0,
+      "max": 12933.0,
+      "ceiling": 129330.0
+    },
+    "lag_rev_3": {
+      "min": 0.0,
+      "max": 12933.0,
+      "ceiling": 129330.0
+    },
+    "lag_lines_1": {
+      "min": 0.0,
+      "max": 84.0,
+      "ceiling": 840.0
+    },
+    "lag_lines_2": {
+      "min": 0.0,
+      "max": 84.0,
+      "ceiling": 840.0
+    },
+    "lag_lines_3": {
+      "min": 0.0,
+      "max": 84.0,
+      "ceiling": 840.0
+    },
+    "roll_mean_rev_3": {
+      "min": 0.0,
+      "max": 6714.663333333333,
+      "ceiling": 67146.63333333333
+    },
+    "trailing_price_3": {
+      "min": 0.0,
+      "max": 1890.0,
+      "ceiling": 18900.0
+    },
+    "active_months_before": {
+      "min": 3.0,
+      "max": 16.0,
+      "ceiling": 160.0
+    },
+    "months_since_first_sale": {
+      "min": 3.0,
+      "max": 16.0,
+      "ceiling": 160.0
+    },
+    "month_of_year": {
+      "min": 1.0,
+      "max": 12.0,
+      "ceiling": 120.0
+    }
+  },
+  "example_payloads": [
+    {
+      "lag_rev_1": 918.98,
+      "lag_rev_2": 0.0,
+      "lag_rev_3": 0.0,
+      "lag_lines_1": 3.0,
+      "lag_lines_2": 0.0,
+      "lag_lines_3": 0.0,
+      "roll_mean_rev_3": 306.32666666666665,
+      "trailing_price_3": 306.32666666666665,
+      "active_months_before": 3,
+      "months_since_first_sale": 5,
+      "month_of_year": 10,
+      "region": "Southeast",
+      "category": "toys"
+    },
+    {
+      "lag_rev_1": 0.0,
+      "lag_rev_2": 0.0,
+      "lag_rev_3": 41.8,
+      "lag_lines_1": 0.0,
+      "lag_lines_2": 0.0,
+      "lag_lines_3": 1.0,
+      "roll_mean_rev_3": 13.933333333333332,
+      "trailing_price_3": 41.8,
+      "active_months_before": 5,
+      "months_since_first_sale": 7,
+      "month_of_year": 3,
+      "region": "Southeast",
+      "category": "toys"
+    },
+    {
+      "lag_rev_1": 169.99,
+      "lag_rev_2": 0.0,
+      "lag_rev_3": 0.0,
+      "lag_lines_1": 1.0,
+      "lag_lines_2": 0.0,
+      "lag_lines_3": 0.0,
+      "roll_mean_rev_3": 56.663333333333334,
+      "trailing_price_3": 169.99,
+      "active_months_before": 3,
+      "months_since_first_sale": 8,
+      "month_of_year": 4,
+      "region": "North",
+      "category": "office_furniture"
+    }
+  ],
+  "examples": [
+    {
+      "lag_rev_1": 918.98,
+      "lag_rev_2": 0.0,
+      "lag_rev_3": 0.0,
+      "lag_lines_1": 3.0,
+      "lag_lines_2": 0.0,
+      "lag_lines_3": 0.0,
+      "roll_mean_rev_3": 306.32666666666665,
+      "trailing_price_3": 306.32666666666665,
+      "active_months_before": 3,
+      "months_since_first_sale": 5,
+      "month_of_year": 10,
+      "region": "Southeast",
+      "category": "toys"
+    },
+    {
+      "lag_rev_1": 0.0,
+      "lag_rev_2": 0.0,
+      "lag_rev_3": 41.8,
+      "lag_lines_1": 0.0,
+      "lag_lines_2": 0.0,
+      "lag_lines_3": 1.0,
+      "roll_mean_rev_3": 13.933333333333332,
+      "trailing_price_3": 41.8,
+      "active_months_before": 5,
+      "months_since_first_sale": 7,
+      "month_of_year": 3,
+      "region": "Southeast",
+      "category": "toys"
+    },
+    {
+      "lag_rev_1": 169.99,
+      "lag_rev_2": 0.0,
+      "lag_rev_3": 0.0,
+      "lag_lines_1": 1.0,
+      "lag_lines_2": 0.0,
+      "lag_lines_3": 0.0,
+      "roll_mean_rev_3": 56.663333333333334,
+      "trailing_price_3": 169.99,
+      "active_months_before": 3,
+      "months_since_first_sale": 8,
+      "month_of_year": 4,
+      "region": "North",
+      "category": "office_furniture"
+    }
+  ]
+}
