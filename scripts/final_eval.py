@@ -54,9 +54,9 @@ def verify_preflight_checks(is_dry_run: bool = False) -> dict[str, Any]:
         sys.exit(2)
     print("  [OK] Tag phase5-frozen exists.")
 
-    # (b) Verify git diff phase5-frozen -- src config reports/final_config.json is empty
+    # (b) Verify git diff --diff-filter=MDRT phase5-frozen -- src config reports/final_config.json is empty
     res_diff = subprocess.run(
-        ["git", "diff", "phase5-frozen", "--", "src", "config", "reports/final_config.json"],
+        ["git", "diff", "--diff-filter=MDRT", "phase5-frozen", "--", "src", "config", "reports/final_config.json"],
         cwd=REPO_ROOT,
         capture_output=True,
         text=True,

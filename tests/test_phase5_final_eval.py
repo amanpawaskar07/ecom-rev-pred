@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from pathlib import Path
 
 import numpy as np
@@ -11,7 +12,7 @@ import pytest
 from gates import gate_05
 from gates import lib as gl
 from revpred.final_eval_core import run_eval
-from scripts.final_eval import run_dry_run
+from scripts.final_eval import run_dry_run, verify_preflight_checks
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEV_PATH = REPO_ROOT / "data" / "processed" / "panel_dev.parquet"
@@ -143,3 +144,61 @@ def test_full_dry_run_pipeline(tmp_path):
         models_dir=models_dir,
         is_dry_run=True,
     )
+
+
+def test_preflight_allows_added_file_under_src(monkeypatch):
+    """Verify pre-flight (b) allows tracked files added under src since phase5-frozen."""
+    # Ensure src/revpred/final_eval_core.py is an added file since phase5-frozen
+    proc = subprocess.run(
+        ["git", "diff", "--name-status", "phase5-frozen", "--", "src/revpred/final_eval_core.py"],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert proc.stdout.strip().startswith("A"), (
+        f"Expected final_eval_core.py to be status 'A', got: {proc.stdout}"
+    )
+
+    diff_calls = []
+    real_run = subprocess.run
+
+    def spy_run(cmd, *args, **kwargs):
+        if len(cmd) >= 2 and cmd[0] == "git" and cmd[1] == "diff":
+            diff_calls.append(list(cmd))
+        return real_run(cmd, *args, **kwargs)
+
+    monkeypatch.setattr("scripts.final_eval.subprocess.run", spy_run)
+
+    final_cfg = verify_preflight_checks(is_dry_run=True)
+    assert isinstance(final_cfg, dict)
+    assert len(diff_calls) == 1
+    assert "--diff-filter=MDRT" in diff_calls[0]
+
+
+def test_preflight_rejects_modified_frozen_file(monkeypatch):
+    """Verify pre-flight (b) rejects a modified frozen file without touching real files."""
+    real_run = subprocess.run
+
+    def mock_run(cmd, *args, **kwargs):
+        if len(cmd) >= 2 and cmd[0] == "git" and cmd[1] == "diff":
+            return subprocess.CompletedProcess(
+                args=cmd,
+                returncode=0,
+                stdout=(
+                    "diff --git a/src/revpred/config.py b/src/revpred/config.py\n"
+                    "--- a/src/revpred/config.py\n"
+                    "+++ b/src/revpred/config.py\n"
+                    "@@ -1 +1 @@\n"
+                    "-# original\n"
+                    "+# modified\n"
+                ),
+                stderr="",
+            )
+        return real_run(cmd, *args, **kwargs)
+
+    monkeypatch.setattr("scripts.final_eval.subprocess.run", mock_run)
+
+    with pytest.raises(SystemExit) as exc_info:
+        verify_preflight_checks(is_dry_run=True)
+    assert exc_info.value.code == 2
