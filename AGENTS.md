@@ -93,3 +93,8 @@ api/app.py  ui/app.py  scripts/  tests/  tests/mutants/  reports/  reports/oof/ 
 Default model is baseline-equivalent Ridge, so the 3% beat rule vs ridge is replaced by
 non-inferiority (phase5.ridge_noninferiority_max_rel). Challenger stack_ridge_meta is evaluated
 in the same single holdout touch and reported, not gated. Holdout ledger was empty at this point.
+
+## Phase 5 recovery (human, after first holdout touch crashed in bootstrap)
+First final_eval run crashed after load_holdout (KeyError 'fold'), no outputs written. Human authorised ONE
+recovery read (ledger purpose final_eval_recovery). Frozen config unchanged. Recovery must reproduce the
+first run's pooled RMSLE (reports/holdout_first_touch_crash.json) within phase5.first_touch_rmsle_repro_abs.
