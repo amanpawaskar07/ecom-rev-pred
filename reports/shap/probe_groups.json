@@ -1,0 +1,19 @@
+[
+  "lag_rev_1",
+  "lag_rev_2",
+  "lag_rev_3",
+  "roll_mean_rev_3",
+  "lag_lines_1",
+  "lag_lines_2",
+  "lag_lines_3",
+  "trailing_price_3",
+  "active_months_before",
+  "months_since_first_sale",
+  "month_of_year",
+  "noise_1",
+  "noise_2",
+  "noise_3",
+  "permuted_top",
+  "region",
+  "category"
+]

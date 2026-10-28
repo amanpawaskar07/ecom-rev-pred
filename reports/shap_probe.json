@@ -1,0 +1,96 @@
+{
+  "top_feature": "roll_mean_rev_3",
+  "top_feature_mean_abs_shap": 0.578468019931414,
+  "max_noise_rel_to_top": 0.012132611777868434,
+  "noise_in_top_k": 0,
+  "noise_features": {
+    "noise_1": {
+      "mean_abs_shap": 0.0018281143162688818,
+      "rel_to_top": 0.0031602685944257247
+    },
+    "noise_2": {
+      "mean_abs_shap": 0.007018327911740105,
+      "rel_to_top": 0.012132611777868434
+    },
+    "noise_3": {
+      "mean_abs_shap": 0.0059724762319735385,
+      "rel_to_top": 0.010324643759358841
+    }
+  },
+  "permuted_top": {
+    "source_feature": "roll_mean_rev_3",
+    "rank": 13,
+    "total_features": 17,
+    "mean_abs_shap": 0.007260078392246774
+  },
+  "all_features_ranked": [
+    [
+      "roll_mean_rev_3",
+      0.578468019931414
+    ],
+    [
+      "lag_lines_1",
+      0.5782217369409172
+    ],
+    [
+      "trailing_price_3",
+      0.4079439262021201
+    ],
+    [
+      "category",
+      0.1395865176376546
+    ],
+    [
+      "active_months_before",
+      0.12566394817114207
+    ],
+    [
+      "lag_rev_2",
+      0.121277379374632
+    ],
+    [
+      "lag_lines_2",
+      0.1077128826898209
+    ],
+    [
+      "lag_rev_3",
+      0.08024990567853695
+    ],
+    [
+      "months_since_first_sale",
+      0.07602160033413215
+    ],
+    [
+      "lag_lines_3",
+      0.045994055136010716
+    ],
+    [
+      "region",
+      0.030680418916672045
+    ],
+    [
+      "lag_rev_1",
+      0.027537657773121945
+    ],
+    [
+      "permuted_top",
+      0.007260078392246774
+    ],
+    [
+      "noise_2",
+      0.007018327911740105
+    ],
+    [
+      "noise_3",
+      0.0059724762319735385
+    ],
+    [
+      "noise_1",
+      0.0018281143162688818
+    ],
+    [
+      "month_of_year",
+      3.37902573979471e-05
+    ]
+  ]
+}

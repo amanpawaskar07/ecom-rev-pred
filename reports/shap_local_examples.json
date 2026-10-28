@@ -1,0 +1,232 @@
+[
+  {
+    "row_id": "3dd2a17168ec895c781a9191c1e95ad7_Southeast_2018-05",
+    "series_id": "3dd2a17168ec895c781a9191c1e95ad7_Southeast",
+    "month": "2018-05",
+    "revenue": 4497.0,
+    "prediction_log": 6.494176322284596,
+    "prediction_rev": 660.2793198878715,
+    "base_value": 1.373259720663455,
+    "attributions": {
+      "lag_rev_1": -0.12214597418700801,
+      "lag_rev_2": 0.2709691750386976,
+      "lag_rev_3": 0.23433388491670692,
+      "roll_mean_rev_3": 1.7573607197448249,
+      "lag_lines_1": 2.745108195689375,
+      "lag_lines_2": 0.5474786835355049,
+      "lag_lines_3": 0.1258226998895312,
+      "trailing_price_3": -0.43902458805574623,
+      "active_months_before": -0.011871884859392752,
+      "months_since_first_sale": 0.10165666902206344,
+      "month_of_year": -8.029301682492578e-05,
+      "region": 0.01968654697159404,
+      "category": -0.10837723306818646
+    },
+    "top_features": [
+      [
+        "lag_lines_1",
+        2.745108195689375
+      ],
+      [
+        "roll_mean_rev_3",
+        1.7573607197448249
+      ],
+      [
+        "lag_lines_2",
+        0.5474786835355049
+      ],
+      [
+        "trailing_price_3",
+        -0.43902458805574623
+      ],
+      [
+        "lag_rev_2",
+        0.2709691750386976
+      ]
+    ]
+  },
+  {
+    "row_id": "5fb1e24560c31b0eaa1911d4247187ed_Southeast_2018-05",
+    "series_id": "5fb1e24560c31b0eaa1911d4247187ed_Southeast",
+    "month": "2018-05",
+    "revenue": 0.0,
+    "prediction_log": 0.1758869824383329,
+    "prediction_rev": 0.19230329982404215,
+    "base_value": 1.373259720663455,
+    "attributions": {
+      "lag_rev_1": 0.04135452663465971,
+      "lag_rev_2": -0.09648331622519768,
+      "lag_rev_3": -0.08211719805154527,
+      "roll_mean_rev_3": -0.9978266996537506,
+      "lag_lines_1": -0.47015733662523435,
+      "lag_lines_2": -0.08917003094273557,
+      "lag_lines_3": -0.01847765761039532,
+      "trailing_price_3": 0.7231221194624028,
+      "active_months_before": -0.10881801960939147,
+      "months_since_first_sale": 0.05335316831385379,
+      "month_of_year": -8.029301682492578e-05,
+      "region": 0.01968654697159404,
+      "category": -0.17175854787255715
+    },
+    "top_features": [
+      [
+        "roll_mean_rev_3",
+        -0.9978266996537506
+      ],
+      [
+        "trailing_price_3",
+        0.7231221194624028
+      ],
+      [
+        "lag_lines_1",
+        -0.47015733662523435
+      ],
+      [
+        "category",
+        -0.17175854787255715
+      ],
+      [
+        "active_months_before",
+        -0.10881801960939147
+      ]
+    ]
+  },
+  {
+    "row_id": "9d8a0e115e802d845b4ce1eb794d1260_Central-West_2018-05",
+    "series_id": "9d8a0e115e802d845b4ce1eb794d1260_Central-West",
+    "month": "2018-05",
+    "revenue": 0.0,
+    "prediction_log": 1.265121931866084,
+    "prediction_rev": 2.543524778357328,
+    "base_value": 1.373259720663455,
+    "attributions": {
+      "lag_rev_1": 0.04135452663465971,
+      "lag_rev_2": 0.1130213643098047,
+      "lag_rev_3": 0.0891682343723961,
+      "roll_mean_rev_3": 0.43063668489492096,
+      "lag_lines_1": -0.47015733662523435,
+      "lag_lines_2": 0.03933693054836536,
+      "lag_lines_3": 0.00735964344243964,
+      "trailing_price_3": -0.3878679732915086,
+      "active_months_before": 0.08507424989060594,
+      "months_since_first_sale": 0.02920141795974896,
+      "month_of_year": -8.029301682492578e-05,
+      "region": 0.018377707117203088,
+      "category": -0.10356294503394735
+    },
+    "top_features": [
+      [
+        "lag_lines_1",
+        -0.47015733662523435
+      ],
+      [
+        "roll_mean_rev_3",
+        0.43063668489492096
+      ],
+      [
+        "trailing_price_3",
+        -0.3878679732915086
+      ],
+      [
+        "lag_rev_2",
+        0.1130213643098047
+      ],
+      [
+        "category",
+        -0.10356294503394735
+      ]
+    ]
+  },
+  {
+    "row_id": "dd6701abf8ccf81f932abdb773d15b15_Southeast_2018-05",
+    "series_id": "dd6701abf8ccf81f932abdb773d15b15_Southeast",
+    "month": "2018-05",
+    "revenue": 0.0,
+    "prediction_log": 0.1303989322968493,
+    "prediction_rev": 0.1392827893798979,
+    "base_value": 1.373259720663455,
+    "attributions": {
+      "lag_rev_1": 0.04135452663465971,
+      "lag_rev_2": -0.09648331622519768,
+      "lag_rev_3": -0.08211719805154527,
+      "roll_mean_rev_3": -0.9978266996537506,
+      "lag_lines_1": -0.47015733662523435,
+      "lag_lines_2": -0.08917003094273557,
+      "lag_lines_3": -0.01847765761039532,
+      "trailing_price_3": 0.7231221194624028,
+      "active_months_before": -0.10881801960939147,
+      "months_since_first_sale": -0.019102082748460685,
+      "month_of_year": -8.029301682492578e-05,
+      "region": 0.01968654697159404,
+      "category": -0.14479134695172632
+    },
+    "top_features": [
+      [
+        "roll_mean_rev_3",
+        -0.9978266996537506
+      ],
+      [
+        "trailing_price_3",
+        0.7231221194624028
+      ],
+      [
+        "lag_lines_1",
+        -0.47015733662523435
+      ],
+      [
+        "category",
+        -0.14479134695172632
+      ],
+      [
+        "active_months_before",
+        -0.10881801960939147
+      ]
+    ]
+  },
+  {
+    "row_id": "24d7b551f0ea7c3cea080d402b211132_Southeast_2018-05",
+    "series_id": "24d7b551f0ea7c3cea080d402b211132_Southeast",
+    "month": "2018-05",
+    "revenue": 0.0,
+    "prediction_log": 0.5246937785286052,
+    "prediction_rev": 0.6899412728336254,
+    "base_value": 1.373259720663455,
+    "attributions": {
+      "lag_rev_1": 0.04135452663465971,
+      "lag_rev_2": -0.09648331622519768,
+      "lag_rev_3": -0.08211719805154527,
+      "roll_mean_rev_3": -0.9978266996537506,
+      "lag_lines_1": -0.47015733662523435,
+      "lag_lines_2": -0.08917003094273557,
+      "lag_lines_3": -0.01847765761039532,
+      "trailing_price_3": 0.7231221194624028,
+      "active_months_before": 0.08507424989060594,
+      "months_since_first_sale": -0.09155733381077517,
+      "month_of_year": -8.029301682492578e-05,
+      "region": 0.01968654697159404,
+      "category": 0.12806648084234667
+    },
+    "top_features": [
+      [
+        "roll_mean_rev_3",
+        -0.9978266996537506
+      ],
+      [
+        "trailing_price_3",
+        0.7231221194624028
+      ],
+      [
+        "lag_lines_1",
+        -0.47015733662523435
+      ],
+      [
+        "category",
+        0.12806648084234667
+      ],
+      [
+        "lag_rev_2",
+        -0.09648331622519768
+      ]
+    ]
+  }
+]
