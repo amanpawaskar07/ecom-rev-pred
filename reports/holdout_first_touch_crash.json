@@ -1,0 +1,10 @@
+{
+  "source": "console output of the first scripts/final_eval.py run, copied by the human. Run crashed in gl.paired_cluster_bootstrap (KeyError: 'fold') after load_holdout and before any output file was written.",
+  "pooled_rmsle": {
+    "final": 1.6113,
+    "challenger": 1.6069,
+    "baseline_ridge": 1.6113,
+    "baseline_mean": 1.9571,
+    "baseline_persistence": 2.2025
+  }
+}
