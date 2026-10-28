@@ -9,7 +9,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import shutil
 import subprocess
 import sys
 import tempfile
@@ -189,7 +188,7 @@ def execute_pipeline(
     pairwise_results: dict[str, Any] = {}
 
     for cand_a, cand_b in pairs:
-        mean_diff, ci_lo, ci_hi, per_fold_diff, folds_fav = gl.paired_cluster_bootstrap(
+        mean_diff, ci_lo, ci_hi, _per_fold_diff, folds_fav = gl.paired_cluster_bootstrap(
             preds_df,
             metric="rmsle",
             a_col=cand_a,
@@ -411,7 +410,7 @@ def run_dry_run(temp_dir: Path | None = None) -> None:
 
     print(f"Target dry-run directory: {target_dir}")
 
-    results_data = execute_pipeline(
+    execute_pipeline(
         train_df=train_df,
         eval_df=eval_df,
         final_cfg=final_cfg,
@@ -474,7 +473,7 @@ def main() -> None:
         )
         print("\nHoldout evaluation completed successfully.")
 
-    except Exception:
+    except Exception:  # noqa: BLE001
         traceback.print_exc()
         print("\nSTATUS: STOP-HUMAN. Exception raised during holdout evaluation!")
         sys.exit(1)
