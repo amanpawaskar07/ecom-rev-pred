@@ -53,6 +53,7 @@ phase5:
   holdout_touch_exact: 1
   n_seeds: 3
   seed_spread_max_rel: 0.05
+  ridge_noninferiority_max_rel: 0.01
 phase6:
   additivity_max_abs: 1.0e-3
   oracle_shap_max_abs: 1.0e-6

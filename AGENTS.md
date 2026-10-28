@@ -88,3 +88,8 @@ STOPPING NOW.
 config/project.yaml  gates/{thresholds.yaml,lib.py,gate_NN.py}  src/revpred/{config,data,panel,cv,
 evaluate,baselines,holdout,features,models,targets,resample,stack,explain,harness,artifacts}.py
 api/app.py  ui/app.py  scripts/  tests/  tests/mutants/  reports/  reports/oof/  models/  docker/
+
+## Phase 5 amendment (human, pre-holdout)
+Default model is baseline-equivalent Ridge, so the 3% beat rule vs ridge is replaced by
+non-inferiority (phase5.ridge_noninferiority_max_rel). Challenger stack_ridge_meta is evaluated
+in the same single holdout touch and reported, not gated. Holdout ledger was empty at this point.
