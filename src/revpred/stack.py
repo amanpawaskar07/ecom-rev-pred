@@ -82,7 +82,7 @@ class TemporalStacker:
         row_id_col: str = "row_id",
         target_transform: str | Any | None = "log1p",
         resampler: str | None = "weights",
-        cache: dict[tuple[int, tuple[str, ...]], Any] | None = None,
+        cache: dict[Any, Any] | None = None,
     ):
         cfg = get_project_config()
         stack_cfg = cfg.get("stack", {})
@@ -220,7 +220,12 @@ class TemporalStacker:
                 X_in_tr = self._get_base_X(inner_train, b_idx)
                 X_in_val = self._get_base_X(inner_val, b_idx)
 
-                cache_key = (b_idx, earlier_months)
+                base_params = (
+                    tuple(sorted((k, str(v)) for k, v in base_spec.get_params().items()))
+                    if hasattr(base_spec, "get_params")
+                    else ()
+                )
+                cache_key = (b_idx, earlier_months, base_params)
                 if self.cache is not None and cache_key in self.cache:
                     base_model = self.cache[cache_key]
                 else:
@@ -269,12 +274,24 @@ class TemporalStacker:
 
         # 4. Refit every base model on all train rows for inference
         y_all_trans = self.transform_y_(train_df[self.target_col].to_numpy(dtype=float))
+        all_train_months = tuple(unique_months)
 
         self.fitted_bases_ = []
         for b_idx, base_spec in enumerate(self.bases):
             X_all = self._get_base_X(train_df, b_idx)
-            refit_base = clone(base_spec)
-            refit_base.fit(X_all, y_all_trans)
+            base_params = (
+                tuple(sorted((k, str(v)) for k, v in base_spec.get_params().items()))
+                if hasattr(base_spec, "get_params")
+                else ()
+            )
+            outer_cache_key = ("refit", b_idx, all_train_months, base_params)
+            if self.cache is not None and outer_cache_key in self.cache:
+                refit_base = self.cache[outer_cache_key]
+            else:
+                refit_base = clone(base_spec)
+                refit_base.fit(X_all, y_all_trans)
+                if self.cache is not None:
+                    self.cache[outer_cache_key] = refit_base
             self.fitted_bases_.append(refit_base)
 
         return self

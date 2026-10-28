@@ -154,11 +154,18 @@ class FullRidgeRegressor(BaseEstimator, RegressorMixin):
 
     def __init__(
         self,
-        alphas: Sequence[float] = (0.1, 1.0, 10.0, 100.0),
+        alphas: Sequence[float] | None = None,
+        alpha: float | None = None,
         cv_splits: int = 3,
         random_state: int | None = None,
     ):
-        self.alphas = alphas
+        self.alpha = alpha
+        if alpha is not None and alphas is None:
+            self.alphas = (alpha,)
+        elif alphas is not None:
+            self.alphas = alphas
+        else:
+            self.alphas = (0.1, 1.0, 10.0, 100.0)
         self.cv_splits = cv_splits
         self.random_state = random_state
 
@@ -200,6 +207,13 @@ class FullRidgeRegressor(BaseEstimator, RegressorMixin):
 
         X_train = preprocessor.fit_transform(df_sorted)
 
+        if self.alpha is not None:
+            best_ridge = Ridge(alpha=self.alpha, random_state=seed)
+            best_ridge.fit(X_train, y_train_log)
+            self.preprocessor_ = preprocessor
+            self.best_estimator_ = best_ridge
+            return self
+
         cv_inner = TimeSeriesSplit(n_splits=self.cv_splits)
         grid = GridSearchCV(
             estimator=Ridge(random_state=seed),
@@ -216,8 +230,8 @@ class FullRidgeRegressor(BaseEstimator, RegressorMixin):
 
     def predict(self, df: pd.DataFrame) -> np.ndarray:
         """Predict log-scale predictions on df."""
-        if not hasattr(self, "grid_"):
+        if not hasattr(self, "best_estimator_"):
             raise RuntimeError("FullRidgeRegressor must be fitted before calling predict.")
         X_val = self.preprocessor_.transform(df)
-        preds_log = self.grid_.best_estimator_.predict(X_val)
+        preds_log = self.best_estimator_.predict(X_val)
         return np.asarray(preds_log, dtype=float)

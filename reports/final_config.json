@@ -1,0 +1,231 @@
+{
+  "final_model": "baseline_ridge",
+  "final_hyperparameters": {
+    "model_type": "FullRidgeRegressor",
+    "alphas": [
+      0.1,
+      1.0,
+      10.0,
+      100.0
+    ],
+    "cv_splits": 3,
+    "categorical_features": [
+      "region",
+      "category"
+    ],
+    "description": "Baseline-equivalent FullRidgeRegressor with internal TimeSeriesSplit(3)"
+  },
+  "categorical_features": [
+    "region",
+    "category"
+  ],
+  "challenger_model": "tuned_stack",
+  "challenger_hyperparameters": {
+    "model_type": "TemporalStacker",
+    "bases": [
+      {
+        "name": "ridge",
+        "model_type": "FullRidgeRegressor",
+        "features": [
+          "lag_rev_1",
+          "lag_rev_2",
+          "lag_rev_3",
+          "lag_lines_1",
+          "lag_lines_2",
+          "lag_lines_3",
+          "roll_mean_rev_3",
+          "trailing_price_3",
+          "active_months_before",
+          "months_since_first_sale",
+          "month_of_year",
+          "region",
+          "category"
+        ],
+        "params": {
+          "alphas": [
+            0.1,
+            1.0,
+            10.0,
+            100.0
+          ],
+          "cv_splits": 3
+        },
+        "description": "FullRidgeRegressor on base+region+category"
+      },
+      {
+        "name": "rf",
+        "model_type": "RandomForest",
+        "features": [
+          "lag_rev_1",
+          "lag_rev_2",
+          "lag_rev_3",
+          "lag_lines_1",
+          "lag_lines_2",
+          "lag_lines_3",
+          "roll_mean_rev_3",
+          "trailing_price_3",
+          "active_months_before",
+          "months_since_first_sale",
+          "month_of_year"
+        ],
+        "params": {
+          "n_estimators": 238,
+          "max_depth": 6,
+          "min_samples_leaf": 2
+        },
+        "description": "RandomForest on 11 numeric features"
+      }
+    ],
+    "features": [
+      "lag_rev_1",
+      "lag_rev_2",
+      "lag_rev_3",
+      "lag_lines_1",
+      "lag_lines_2",
+      "lag_lines_3",
+      "roll_mean_rev_3",
+      "trailing_price_3",
+      "active_months_before",
+      "months_since_first_sale",
+      "month_of_year"
+    ],
+    "meta": {
+      "model_type": "make_ridge",
+      "alpha": 0.02871575862504636,
+      "description": "make_ridge(alpha=0.02871575862504636)"
+    },
+    "rf_params": {
+      "n_estimators": 238,
+      "max_depth": 6,
+      "min_samples_leaf": 2
+    },
+    "meta_alpha": 0.02871575862504636,
+    "transform": "log1p",
+    "target_transform": "log1p",
+    "resampler": "weights",
+    "tail_weight": 3.0,
+    "min_inner_train_months": 3,
+    "description": "Tuned TemporalStacker pre-registered challenger: FullRidgeRegressor + RF bases with Ridge meta"
+  },
+  "challenger_frozen": 1,
+  "features": [
+    "lag_rev_1",
+    "lag_rev_2",
+    "lag_rev_3",
+    "lag_lines_1",
+    "lag_lines_2",
+    "lag_lines_3",
+    "roll_mean_rev_3",
+    "trailing_price_3",
+    "active_months_before",
+    "months_since_first_sale",
+    "month_of_year"
+  ],
+  "target_transform": "log1p",
+  "resampler": "none",
+  "seed": 42,
+  "decision_evidence": {
+    "best_candidate": "tuned_stack",
+    "mean_fold_metrics": {
+      "baseline_ridge": 1.9566133100816239,
+      "tuned_ridge": 1.9567352953472135,
+      "tuned_stack": 1.9561600335660831
+    },
+    "pairwise_vs_best": {
+      "baseline_ridge": {
+        "winner": "baseline_ridge",
+        "advanced_wins": false,
+        "advanced_col": "tuned_stack",
+        "rival_col": "baseline_ridge",
+        "metric": "rmsle",
+        "relative_gain": 0.00023166382095285573,
+        "ci_lo": -0.003750694164517651,
+        "ci_hi": 0.004759263811414899,
+        "mean_diff": 0.0004532765155415841,
+        "folds_favoring_adv": 6,
+        "n_folds": 8,
+        "folds_favoring_frac": 0.75,
+        "m_rival": 1.9566133100816239,
+        "m_adv": 1.9561600335660831,
+        "per_fold_diff": [
+          -0.007407656755030079,
+          0.017789002355293793,
+          -0.050123880702856116,
+          0.020464727637068414,
+          0.004377988836800073,
+          0.014594994723102328,
+          0.0026003858276970604,
+          0.0013306502022571998
+        ]
+      },
+      "tuned_ridge": {
+        "winner": "tuned_ridge",
+        "advanced_wins": false,
+        "advanced_col": "tuned_stack",
+        "rival_col": "tuned_ridge",
+        "metric": "rmsle",
+        "relative_gain": 0.000293990598778586,
+        "ci_lo": -0.003639891275150478,
+        "ci_hi": 0.004947083482931371,
+        "mean_diff": 0.0005752617811311533,
+        "folds_favoring_adv": 6,
+        "n_folds": 8,
+        "folds_favoring_frac": 0.75,
+        "m_rival": 1.9567352953472135,
+        "m_adv": 1.9561600335660831,
+        "per_fold_diff": [
+          -0.008079270562415086,
+          0.01778425500347236,
+          -0.050126061155217894,
+          0.021555017815254374,
+          0.004861643681671968,
+          0.014716549771157661,
+          0.002874031500940344,
+          0.0010159281941855003
+        ]
+      },
+      "tuned_stack": {
+        "is_best": true,
+        "winner": "tuned_stack",
+        "advanced_wins": false
+      }
+    },
+    "selected": "baseline_ridge"
+  },
+  "stability": {
+    "n_seeds": 3,
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "pooled_rmsles": [
+      1.9205692769242615,
+      1.9205692769242615,
+      1.9205692769242615
+    ],
+    "seed_spread_rel": 0.0
+  },
+  "sha256": "9ec20728dd043c77c4be24952ee8fc54cba58193357902f24e6b8cfce2e71935",
+  "sha256_config": "fbc4488c4065b1142b23c26821b6ea43f96acaedbe72baebc7cd9365b9b2cce4",
+  "sha256_src": "ab406e998504da4de57ddab8030f5a4fe7ffa2896c1d281ad006eedb078a3231",
+  "file_hashes": {
+    "config/features_selected.yaml": "79d0952e4b0cedf6c1429d26c21c2262555d778210db9040ddee65aba9b21af8",
+    "config/project.yaml": "4a6d6b5750d7c446dbc00504f85cdd914e17af64cbb31114a95432b9a922307f",
+    "config/tuning_space.yaml": "1b2bbb2a22a25d9404933c2d0a159c85211d555f510cbd88554a877eea2475ed",
+    "src/revpred/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/revpred/baselines.py": "7aae5624a20d600b20beef67378d555af7f286cc50ce84baef48564495579d90",
+    "src/revpred/config.py": "717c4391725f42daa7e5a9cf4a1165b3a5abc731e62b67660b38eb98ac33b9b9",
+    "src/revpred/cv.py": "84be7aac6250ac7b9a5865ba90db0b6488cd17d168fd181ba5c6c87b90beb25a",
+    "src/revpred/data.py": "f67762649dfa9ba73c3e0c7065728c3dbcaad919c765fd006fb7e0f035378a0d",
+    "src/revpred/evaluate.py": "8730a3e1e55dd1fe5b41f39cb28a7ed64e70cc1323eeb04d982e9ee5da90e398",
+    "src/revpred/features.py": "eb9ebec39f35215489e3fa0e4745569dab9eabe97025b2b0f158bce639fb8d36",
+    "src/revpred/harness.py": "c252d9cb7a4bc2ce9ccdbfc34344d2d3b047ddf60f463889fe3cc553fda1420b",
+    "src/revpred/holdout.py": "d3f163e2f1bf2600e1949b827cc5686572968baa8faa26e1655a5573ad20bb60",
+    "src/revpred/models.py": "93245fe7b3f74155e80368d1a6ada114b96cdaf54e8e7ab95a5779655b500b6d",
+    "src/revpred/panel.py": "be70a0123120860548304cae2ae6caacdc532446def3eb2f87b04d965ce53d68",
+    "src/revpred/resample.py": "ab7820e31c6c47357407359814e27e0f3a07801ed5856042bf6875fd67c6bfd1",
+    "src/revpred/stack.py": "4ed1816592f42fcfca61c69c540a986e461ef9f3476a50f91668a2e61fa6dd80",
+    "src/revpred/targets.py": "d13dbc6ef182bac6c17773b4fd325367b30a837bd85d9d9d8abbb608e07ef5db"
+  }
+}
