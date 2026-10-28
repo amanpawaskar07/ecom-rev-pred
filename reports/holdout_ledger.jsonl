@@ -1,1 +1,2 @@
 {"ts": "2026-10-28T09:34:37.344154+00:00", "git_sha": "1e187e70967d52bb1f6e038ad453204be94a79c0", "caller_file": "/home/aman/ecom-rev-pred/scripts/final_eval.py", "purpose": "final_eval"}
+{"ts": "2026-10-28T10:00:35.466532+00:00", "git_sha": "911121220cf27d05a486327c1629265627e60fbb", "caller_file": "/home/aman/ecom-rev-pred/scripts/final_eval.py", "purpose": "final_eval_recovery"}

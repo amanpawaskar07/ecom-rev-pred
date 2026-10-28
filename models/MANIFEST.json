@@ -1,0 +1,14 @@
+{
+  "files": {
+    "models/final_model.joblib": "6ad20e37961c7cc93c39f7d1c356c537bfe1c0321b5b954a2afbd4bc36c6d946",
+    "models/feature_pipeline.joblib": "e52874d818ce1f6658f0d0b7123fc6c3fc5196b3020cd007a958f81ecdc66a63"
+  },
+  "versions": {
+    "python": "3.11.18 (main, Oct 26 2026, 15:28:55) [GCC 13.3.0]",
+    "scikit_learn": "1.9.1",
+    "xgboost": "3.2.0",
+    "shap": "0.51.0"
+  },
+  "config_sha256": "fbc4488c4065b1142b23c26821b6ea43f96acaedbe72baebc7cd9365b9b2cce4",
+  "sha256_src": "ab406e998504da4de57ddab8030f5a4fe7ffa2896c1d281ad006eedb078a3231"
+}
