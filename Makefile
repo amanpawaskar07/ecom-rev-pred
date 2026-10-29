@@ -3,7 +3,7 @@ PYTHON ?= $(VENV)/bin/python
 PYTEST ?= $(VENV)/bin/pytest
 RUFF ?= $(VENV)/bin/ruff
 
-.PHONY: setup test lint verify-frozen build-data ci serve-api \
+.PHONY: setup test lint verify-frozen build-data ci serve-api serve-ui \
 	gate-0 gate-1 gate-2 gate-3 gate-4 gate-5 gate-5a gate-6 gate-7 gate-8 gate-9 gate-10
 
 setup:
@@ -11,6 +11,9 @@ setup:
 
 serve-api:
 	$(PYTHON) -m uvicorn api.app:app --host 0.0.0.0 --port 8000
+
+serve-ui:
+	$(PYTHON) -m streamlit run ui/app.py --server.port 8501
 
 test:
 	$(PYTEST)
