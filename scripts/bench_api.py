@@ -43,6 +43,7 @@ def run_benchmark(
     base_url: str,
     n: int = 500,
     warmup: int = 20,
+    out_path: Path | str | None = None,
 ) -> dict[str, dict[str, float]]:
     """Run sequential benchmark requests and return latency summary."""
     bundle = load_bundle(MODELS_DIR)
@@ -123,7 +124,7 @@ def run_benchmark(
         },
     }
 
-    out_file = REPORTS_DIR / "bench_api_local.json"
+    out_file = Path(out_path) if out_path else (REPORTS_DIR / "bench_api_local.json")
     out_file.parent.mkdir(parents=True, exist_ok=True)
     with open(out_file, "w", encoding="utf-8") as f:
         json.dump(results, f, indent=2)
@@ -137,6 +138,7 @@ def main() -> None:
     parser.add_argument("--url", type=str, default=None, help="Base URL of running service. If omitted, starts uvicorn.")
     parser.add_argument("--n", type=int, default=500, help="Number of benchmark requests.")
     parser.add_argument("--warmup", type=int, default=20, help="Number of warmup requests.")
+    parser.add_argument("--out", type=str, default=None, help="Output path for benchmark JSON.")
     args = parser.parse_args()
 
     proc: subprocess.Popen | None = None
@@ -166,7 +168,7 @@ def main() -> None:
 
     try:
         wait_for_server(url, timeout_s=15.0)
-        run_benchmark(url, n=args.n, warmup=args.warmup)
+        run_benchmark(url, n=args.n, warmup=args.warmup, out_path=args.out)
     finally:
         if proc is not None:
             proc.terminate()

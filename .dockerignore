@@ -1,0 +1,13 @@
+data/
+reports/
+tests/
+gates/
+.git
+.venv
+__pycache__
+*.csv
+*.parquet
+docker-compose*.yml
+.ruff_cache
+.pytest_cache
+

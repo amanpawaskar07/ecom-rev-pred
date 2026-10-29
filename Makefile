@@ -4,10 +4,17 @@ PYTEST ?= $(VENV)/bin/pytest
 RUFF ?= $(VENV)/bin/ruff
 
 .PHONY: setup test lint verify-frozen build-data ci serve-api serve-ui \
+	docker-up docker-down \
 	gate-0 gate-1 gate-2 gate-3 gate-4 gate-5 gate-5a gate-6 gate-7 gate-8 gate-9 gate-10
 
 setup:
 	$(PYTHON) -m pip install -e .
+
+docker-up:
+	docker compose -p revpred-p9 up -d --build
+
+docker-down:
+	docker compose -p revpred-p9 down -v
 
 serve-api:
 	$(PYTHON) -m uvicorn api.app:app --host 0.0.0.0 --port 8000
