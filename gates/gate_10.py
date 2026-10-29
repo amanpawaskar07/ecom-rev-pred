@@ -7,6 +7,7 @@ import os
 import subprocess
 import tempfile
 from pathlib import Path
+from typing import Any
 
 import yaml
 
@@ -18,6 +19,80 @@ from scripts.render_readme import PLACEHOLDER_REGEX, render
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 README_PATH = REPO_ROOT / "README.md"
+
+ALLOWED_CI_DIFF_FILES = {
+    "reports/ci_run.json",
+    "README.md",
+    "README.md.tmpl",
+}
+
+
+def ci_run_status(
+    ci_run: dict[str, Any] | None,
+    head_sha: str,
+    repo_dir: Path | str,
+) -> tuple[str, str]:
+    """Evaluate CI run record against current git state.
+
+    Returns:
+        tuple[str, str]: (status, reason) where status is "pending", "PASS", or "FAIL".
+    """
+    if ci_run is None:
+        return (
+            "pending",
+            "reports/ci_run.json does not exist yet (CI has not yet run on GitHub Actions)",
+        )
+
+    conclusion = ci_run.get("conclusion")
+    if conclusion != "success":
+        return ("FAIL", f"CI run conclusion is '{conclusion}', expected 'success'")
+
+    ci_sha = ci_run.get("sha")
+    if not ci_sha:
+        return ("FAIL", "CI run record missing 'sha' field")
+
+    if ci_sha == head_sha:
+        return ("PASS", f"CI run SHA {ci_sha} matches HEAD exactly")
+
+    # Check if ci_sha is an ancestor of head_sha
+    proc_ancestor = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", ci_sha, head_sha],
+        cwd=str(repo_dir),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if proc_ancestor.returncode != 0:
+        return ("FAIL", f"CI run SHA {ci_sha} is not an ancestor of HEAD {head_sha}")
+
+    # Inspect diff between ci_sha and head_sha
+    proc_diff = subprocess.run(
+        ["git", "diff", "--name-only", ci_sha, head_sha],
+        cwd=str(repo_dir),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if proc_diff.returncode != 0:
+        return ("FAIL", f"git diff failed between {ci_sha} and {head_sha}: {proc_diff.stderr.strip()}")
+
+    changed_files = [
+        line.strip().replace("\\", "/")
+        for line in proc_diff.stdout.splitlines()
+        if line.strip()
+    ]
+
+    offending = [f for f in changed_files if f not in ALLOWED_CI_DIFF_FILES]
+    if offending:
+        return (
+            "FAIL",
+            f"Offending files modified between CI run {ci_sha} and HEAD {head_sha}: {', '.join(sorted(offending))}",
+        )
+
+    return (
+        "PASS",
+        f"CI run SHA {ci_sha} is ancestor of HEAD with only allowed files changed: {', '.join(changed_files)}",
+    )
 
 
 def build_checks() -> None:
@@ -238,26 +313,30 @@ def build_checks() -> None:
 
     # 14. CI run recorded (pending until reports/ci_run.json exists)
     ci_run_file = REPO_ROOT / "reports" / "ci_run.json"
-    if not ci_run_file.exists():
-        gl.pending("ci_run_recorded", "reports/ci_run.json does not exist yet (CI has not yet run on GitHub Actions)")
-    else:
+    ci_data = None
+    if ci_run_file.exists():
         try:
             with open(ci_run_file, encoding="utf-8") as f:
                 ci_data = json.load(f)
-            proc_rev = subprocess.run(
-                ["git", "rev-parse", "HEAD"],
-                cwd=REPO_ROOT,
-                capture_output=True,
-                text=True,
-                check=False,
-            )
-            curr_head = proc_rev.stdout.strip()
-            ci_sha = ci_data.get("sha")
-            ci_conc = ci_data.get("conclusion")
-            ci_ok = 1 if (ci_sha == curr_head and ci_conc == "success") else 0
-            gl.check("ci_run_recorded", ci_ok, "==", "global.bool_true")
-        except (OSError, json.JSONDecodeError, KeyError):
-            gl.check("ci_run_recorded", 0, "==", "global.bool_true")
+        except (OSError, json.JSONDecodeError):
+            ci_data = None
+
+    proc_rev = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    curr_head = proc_rev.stdout.strip()
+
+    status, reason = ci_run_status(ci_data, curr_head, REPO_ROOT)
+    if status == "pending":
+        gl.pending("ci_run_recorded", reason)
+    else:
+        gl.check("ci_run_recorded", 1 if status == "PASS" else 0, "==", "global.bool_true")
+        if reason:
+            gl.info("ci_run_recorded_detail", reason)
 
     # Informational outputs
     gl.info("time_invariant_gates", ["gate-0", "gate-2", "gate-3", "gate-4", "gate-6", "gate-7", "gate-8", "gate-9"])
