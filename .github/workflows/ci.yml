@@ -14,6 +14,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          fetch-tags: true
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
@@ -22,8 +23,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m venv .venv
+          .venv/bin/pip install --upgrade pip
+          .venv/bin/pip install -r requirements.txt
+          .venv/bin/pip install -e .
 
       - name: Run CI target
         run: make ci
@@ -55,11 +58,16 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m venv .venv
+          .venv/bin/pip install --upgrade pip
+          .venv/bin/pip install -r requirements.txt
+          .venv/bin/pip install -e .
 
       - name: Verify README render and check numbers
+        env:
+          PYTHONPATH: src:.
         run: |
-          python scripts/render_readme.py --check
-          python scripts/check_readme_numbers.py
+          .venv/bin/python scripts/render_readme.py --check
+          .venv/bin/python scripts/check_readme_numbers.py
+
 
