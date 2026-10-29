@@ -3,8 +3,8 @@ PYTHON ?= $(VENV)/bin/python
 PYTEST ?= $(VENV)/bin/pytest
 RUFF ?= $(VENV)/bin/ruff
 
-.PHONY: setup test lint verify-frozen build-data ci serve-api serve-ui \
-	docker-up docker-down \
+.PHONY: setup test test-ci lint verify-frozen build-data ci harness-e2e readme readme-check \
+	serve-api serve-ui docker-up docker-down \
 	gate-0 gate-1 gate-2 gate-3 gate-4 gate-5 gate-5a gate-6 gate-7 gate-8 gate-9 gate-10
 
 setup:
@@ -25,16 +25,30 @@ serve-ui:
 test:
 	$(PYTEST)
 
+test-ci:
+	PYTHONPATH=src:. $(PYTHON) -m pytest $(shell sed '/^$$/d; s/^/--deselect=/' ci/tests_needing_data.txt)
+
 lint:
 	$(RUFF) check .
 
 verify-frozen:
-	$(PYTHON) scripts/verify_frozen.py
+	PYTHONPATH=src:. $(PYTHON) scripts/verify_frozen.py
 
 build-data:
-	PYTHONHASHSEED=0 $(PYTHON) scripts/build_data.py
+	PYTHONPATH=src:. PYTHONHASHSEED=0 $(PYTHON) scripts/build_data.py
 
-ci: lint test verify-frozen
+harness-e2e:
+	PYTHONPATH=src:. PYTHONHASHSEED=0 $(PYTHON) scripts/harness_e2e.py
+
+readme:
+	PYTHONPATH=src:. PYTHONHASHSEED=0 $(PYTHON) scripts/render_readme.py
+	PYTHONPATH=src:. PYTHONHASHSEED=0 $(PYTHON) scripts/check_readme_numbers.py
+
+readme-check:
+	PYTHONPATH=src:. PYTHONHASHSEED=0 $(PYTHON) scripts/render_readme.py --check
+	PYTHONPATH=src:. PYTHONHASHSEED=0 $(PYTHON) scripts/check_readme_numbers.py
+
+ci: lint test-ci verify-frozen harness-e2e readme-check
 
 gate-0:
 	@if [ ! -f gates/gate_00.py ]; then echo "gate not implemented" >&2; exit 2; fi; PYTHONHASHSEED=0 $(PYTHON) -m gates.gate_00

@@ -1,0 +1,115 @@
+# E-Commerce Monthly Revenue Predictor
+
+An end-to-end, leak-free machine learning system predicting monthly product-level revenue across geographic regions for Brazilian e-commerce, evaluated against strict statistical gates and sealed holdout data.
+
+## What this is
+
+This system forecasts monthly sales revenue for individual products sold across Brazilian regions. In e-commerce inventory and supply-chain management, aggregate forecasts hide granular product stockouts, while unconstrained models overfit noisy long-tail items. This project solves that problem with a causal, expanding-window panel structure, pre-registered ablation gates, and an auditable evaluation protocol. The final production model is served through a FastAPI REST service, an interactive Streamlit user interface, and containerized Docker Compose deployment.
+
+## Data
+
+The raw data source consists of public order-line transactions from Olist. The forecasting unit is defined at the product level: each observation corresponds to an entity-region-month tuple.
+
+- Grain selection: Candidate grains were evaluated between product identifier and product category.
+- Chosen grain: `{{reports/entity_choice.json#chosen}}`.
+- Candidate scale: The product grain yielded {{reports/entity_choice.json#candidates.product_id.series|int}} distinct time series and {{reports/entity_choice.json#candidates.product_id.panel_rows|int}} monthly panel observations across {{reports/entity_choice.json#candidates.product_id.modeled_months|int}} modeled months, whereas the category grain produced only {{reports/entity_choice.json#candidates.category.series|int}} series and {{reports/entity_choice.json#candidates.category.panel_rows|int}} observations.
+- Causal entry rule: A series enters the active panel strictly after three active historical months, preventing future survival bias.
+
+## Method
+
+- Panel formulation: Pure lag demand features constructed exclusively from past months strictly prior to the prediction month.
+- Target transformation: Natural log revenue transformation `log1p(revenue)`.
+- Temporal validation: Expanding-window time series cross-validation folds ensuring training data strictly precedes validation periods.
+- Base architecture: Full Ridge regression with standardized continuous features and one-hot encoded geographic and category levels.
+- Explanation engine: Closed-form exact linear SHAP attribution decomposed into interpretable original feature groupings.
+
+## Results
+
+Final performance evaluated on the sealed three-month holdout window encompassing {{reports/holdout_results.json#holdout_rows|int}} observations:
+
+- Final Model (Full Ridge): RMSLE {{reports/holdout_results.json#metrics.pooled.final.rmsle|f4}}, MAE {{reports/holdout_results.json#metrics.pooled.final.mae|f2}} BRL, WAPE {{reports/holdout_results.json#metrics.pooled.final.wape|f4}}, Tail MAE {{reports/holdout_results.json#metrics.pooled.final.tail_mae|f2}} BRL (evaluating products above the tail threshold of {{reports/holdout_results.json#tail_threshold|f2}} BRL).
+- Baseline Mean: RMSLE {{reports/holdout_results.json#metrics.pooled.baseline_mean.rmsle|f4}}, MAE {{reports/holdout_results.json#metrics.pooled.baseline_mean.mae|f2}} BRL, WAPE {{reports/holdout_results.json#metrics.pooled.baseline_mean.wape|f4}}, Tail MAE {{reports/holdout_results.json#metrics.pooled.baseline_mean.tail_mae|f2}} BRL.
+- Baseline Persistence: RMSLE {{reports/holdout_results.json#metrics.pooled.baseline_persistence.rmsle|f4}}, MAE {{reports/holdout_results.json#metrics.pooled.baseline_persistence.mae|f2}} BRL, WAPE {{reports/holdout_results.json#metrics.pooled.baseline_persistence.wape|f4}}, Tail MAE {{reports/holdout_results.json#metrics.pooled.baseline_persistence.tail_mae|f2}} BRL.
+- Outperformance vs Mean: Relative error reduction of {{reports/holdout_results.json#pairwise.final vs baseline_mean.relative_gain|pct1}} with ninety-five percent cluster bootstrap confidence interval [{{reports/holdout_results.json#pairwise.final vs baseline_mean.ci_lo|pct1}}, {{reports/holdout_results.json#pairwise.final vs baseline_mean.ci_hi|pct1}}].
+- Challenger Stacker: RMSLE {{reports/holdout_results.json#metrics.pooled.challenger.rmsle|f4}}, Tail MAE {{reports/holdout_results.json#metrics.pooled.challenger.tail_mae|f2}} BRL.
+- Holdout Verdict: The challenger {{reports/holdout_results.json#claim_challenger_vs_ridge}} the baseline-equivalent Ridge on the sealed holdout.
+
+## What did not work
+
+In accordance with protocol rules, more complex options were tested against simpler rivals and rejected when failing pre-registered material effect thresholds:
+
+- Stacking versus Ridge: A temporal stacking ensemble (Ridge and Random Forest bases combined with an XGBoost meta-regressor) was ablated against standalone Ridge. On synthetic linear-truth benchmarks, the stacker degraded relative performance by {{reports/harness_stack.json#linear_truth_stack_gain_rel|pct1}}. On the sealed holdout, the challenger {{reports/holdout_results.json#claim_challenger_vs_ridge}} the Ridge baseline. Ridge was retained as the default served model.
+- Target Transformation: QuantileTransformer regression was ablated against standard `log1p` transformation. The QuantileTransformer degraded performance with relative loss of {{reports/imbalance_decision.json#target_decision.relative_gain|pct1}} across validation folds (ninety-five percent confidence interval [{{reports/imbalance_decision.json#target_decision.ci_lo|pct1}}, {{reports/imbalance_decision.json#target_decision.ci_hi|pct1}}]), failing across all folds.
+- Imbalance Resampling: Synthetic minority oversampling for regression (SMOTER) was tested against standard weighting. SMOTER provided negligible benefit on tail error while increasing bulk variance, leading to its rejection.
+- Engineered Feature Controls: Three candidate features were ablated:
+  - `price_bucket`: Relative gain {{reports/feature_decision.json#decisions.price_bucket.relative_gain|pct1}}, lower bound below zero; dropped.
+  - `high_value_flag`: Relative gain {{reports/feature_decision.json#decisions.high_value_flag.relative_gain|pct1}}, lower bound below zero; dropped.
+  - `cat_region_level`: Relative gain {{reports/feature_decision.json#decisions.cat_region_level.relative_gain|pct1}}, below required threshold; dropped.
+
+## Explanations
+
+Interpretability is enforced via exact linear SHAP:
+
+- Primary attribution driver: Feature `{{reports/shap_probe.json#top_feature}}` is the dominant signal with mean absolute SHAP value {{reports/shap_probe.json#top_feature_mean_abs_shap|f4}}.
+- Noise probe validation: Random probe features demonstrated minimal attribution, with maximum relative impact of {{reports/shap_probe.json#max_noise_rel_to_top|pct1}} compared to the top feature, and zero noise features in the top tier (exactly {{reports/shap_probe.json#noise_in_top_k|int}} noise features in top ranks).
+- Method cross-check: Spearman rank correlation between SHAP attribution and permutation importance reached {{reports/shap_crosscheck.json#spearman_rank_correlation|f4}}, with top rank overlap of {{reports/shap_crosscheck.json#top3_overlap|int}} features.
+
+## API, UI and Docker usage
+
+Run the application locally or via Docker Compose:
+
+```bash
+# Start FastAPI service locally
+PYTHONPATH=. .venv/bin/python -m uvicorn api.app:app --host 0.0.0.0 --port 8000
+
+# Start Streamlit UI locally
+PYTHONPATH=. .venv/bin/python -m streamlit run ui/app.py --server.port 8501
+
+# Run containerized services
+docker compose -p revpred-p9 up -d --build
+
+# Run docker smoke verification
+bash scripts/docker_smoke.sh
+```
+
+FastAPI endpoints include `GET /health`, `GET /meta`, `POST /predict`, and `POST /explain`.
+
+## Reproduce
+
+All steps are reproducible under Python 3.11:
+
+```bash
+# Verify frozen gates and codebase integrity
+make verify-frozen
+
+# Execute test suite safe without data
+make ci
+
+# Run end-to-end synthetic harness
+PYTHONPATH=. PYTHONHASHSEED=0 .venv/bin/python scripts/harness_e2e.py
+
+# Verify README template rendering and numeric consistency
+make readme
+```
+
+## Honest limitations
+
+- Single dataset, short development window, holdout months denser than development months.
+- Most product-region-months have zero revenue.
+- The caller supplies the lag features; there is no history store.
+- Linear model: SHAP is exact but blind to interactions; collinear lag coefficients are unstable.
+- Ridge is worst on tail MAE.
+- Stack lost to Ridge on the linear-truth harness (relative loss {{reports/harness_stack.json#linear_truth_stack_gain_rel|pct1}}) and on real data; the stacker is not served.
+- SMOTER harness margins were thin; feature tests are underpowered; the causality log is self-reported by the agent.
+- The `gates/lib.py` helper uses the first row's tail threshold in the tail MAE lambdas for confidence intervals and folds (a known bug, left in place because gates are frozen).
+- The gate statistic is the mean of per-month relative gains, which differs slightly from the pooled gain; the months favoring threshold is `0.67` against `2/3`; bootstrap confidence interval versus point estimate oddity in Phase four info rows; the seed-spread check is vacuous for Ridge; Random Forest depth sits at the bottom edge of its search range.
+- The first holdout touch crashed (KeyError) and a human-authorised recovery read followed; both are recorded in the ledger and the recovery reproduced the first result within the pre-registered tolerance.
+- Gates one, five-a, and five are point-in-time and fail by design after the holdout touch.
+- Docker images are not slimmed (large, API and UI share a base); read-only filesystem is on the API service only.
+- Scripts need `PYTHONPATH=.`; CI skips tests that need local data; CI has not yet run on GitHub.
+
+## Protocol integrity
+
+- Holdout seal: Cryptographic `SHA256` checksum recorded prior to model selection, ensuring zero contamination.
+- Audit ledger: Sealed holdout data accessed under pre-registered audit logging with immutable ledger records.
+- Frozen gates: Automated gate verification scripts ensure thresholds and baseline behaviors cannot be retroactively modified.
