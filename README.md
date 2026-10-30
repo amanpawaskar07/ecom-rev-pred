@@ -114,7 +114,7 @@ make readme
 - The first holdout touch crashed (KeyError) and a human-authorised recovery read followed; both are recorded in the ledger and the recovery reproduced the first result within the pre-registered tolerance.
 - Gates one, five-a, and five are point-in-time and fail by design after the holdout touch.
 - Docker images are not slimmed (large, API and UI share a base); read-only filesystem is on the API service only.
-- Scripts need `PYTHONPATH=.`; CI skips tests that need local data; CI passed on GitHub Actions for a recorded commit (conclusion: success, run URL: `https://github.com/amanpawaskar07/ecom-rev-pred/actions/runs/40884975368`).
+- Scripts need `PYTHONPATH=.`; CI skips tests that need local data; CI passed on GitHub Actions for a recorded commit (conclusion: success, run URL: `https://github.com/amanpawaskar07/ecom-rev-pred/actions/runs/41010852425`).
 
 ## Protocol integrity
 
