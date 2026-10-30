@@ -31,6 +31,9 @@ def is_excluded(rel_path: str) -> bool:
         # Exclude reports/MANIFEST.json
         if parts[1] == "MANIFEST.json":
             return True
+        # Exclude reports/ci_run.json (post-hoc record of a CI run, not evidence the tested commit produced)
+        if parts[1] == "ci_run.json":
+            return True
         # Exclude reports/gate_*.json
         if parts[1].startswith("gate_") and parts[1].endswith(".json"):
             return True
