@@ -108,13 +108,13 @@ make readme
 - Ridge trails behind the persistence baseline and the challenger stacker on tail MAE (at 1060.05 BRL versus 732.68 BRL and 948.11 BRL, respectively), though ahead of the mean baseline (1148.25 BRL).
 - On the linear-truth harness the stack lost to ridge with relative gain of -36.9% (negative means worse); on the sealed holdout the stacker's point estimates are slightly lower on RMSLE and tail MAE but it does not beat the baseline-equivalent Ridge under the pre-registered material-gain rule, so it is not served.
 - SMOTER harness margins were thin; feature tests are underpowered; the causality log is self-reported by the agent.
-- In target ablation (QuantileTransformer target versus log1p), the relative gain point estimate (-25.2%) appears to lie outside the reported ninety-five percent bootstrap confidence interval ([-0.5303, -0.4643]) in reports/ablation_target.json only if units are confused: the bootstrap code computes the confidence interval on absolute RMSLE difference (where the point estimate is -0.4983), whereas relative gain is normalized by the rival metric.
+- In target ablation (QuantileTransformer target versus log1p), the point estimate is reported as a relative gain versus log1p (-25.2%), the confidence interval is reported as an absolute RMSLE difference ([-0.5303, -0.4643]), they are different units; the absolute point estimate (-0.4983) lies inside the interval.
 - The `gates/lib.py` helper uses the first row's tail threshold in the tail MAE lambdas for confidence intervals and folds (a known bug, left in place because gates are frozen).
 - The gate statistic is the mean of per-month relative gains, which differs slightly from the pooled gain; the months favoring threshold is `0.67` against `2/3`; bootstrap confidence interval versus point estimate oddity in Phase four info rows; the seed-spread check is vacuous for Ridge; Random Forest depth sits at the bottom edge of its search range.
 - The first holdout touch crashed (KeyError) and a human-authorised recovery read followed; both are recorded in the ledger and the recovery reproduced the first result within the pre-registered tolerance.
 - Gates one, five-a, and five are point-in-time and fail by design after the holdout touch.
 - Docker images are not slimmed (large, API and UI share a base); read-only filesystem is on the API service only.
-- Scripts need `PYTHONPATH=.`; CI skips tests that need local data; CI has not yet run on GitHub.
+- Scripts need `PYTHONPATH=.`; CI skips tests that need local data; CI passed on GitHub Actions for a recorded commit (conclusion: success, run URL: `https://github.com/amanpawaskar07/ecom-rev-pred/actions/runs/40884975368`).
 
 ## Protocol integrity
 
